@@ -35,7 +35,10 @@ REST_ROUTER.prototype.handleRoutes = function(router,md5) {
     router.get("/play/:x/:y/:idJoueur",function(req,res){
       if(req.params.idJoueur == joueur1.idJoueur && !req.params.idJoueur == joueur2.idJoueur)
       {
-      res.status(200).send({idJoueur:req.params.idJoueur,joueur1:joueur1.idJoueur,joueur2:joueur2.idJoueur});
+      res.status(401).send({code:401});
+      }
+      else {
+        res.status(200).send({code:200});
       }
     });
 

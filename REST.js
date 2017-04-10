@@ -7,8 +7,11 @@ function REST_ROUTER(router,connection,md5) {
 
 REST_ROUTER.prototype.handleRoutes = function(router,md5) {
     var self = this;
-    var joueur1 = {idJoueur:null,nomJoueur:null,tenaille:null}
-    var joueur2 = {idJoueur:null,nomJoueur:null,tenaille:null}
+    var board=[[0,0]]
+    var joueur1 = {idJoueur:null,nomJoueur:null,tenaille:0}
+    var joueur2 = {idJoueur:null,nomJoueur:null,tenaille:0}
+    var partie = {lap:0, lastCoup:{x:null,y:null},endOfGame:false, prolongation:false }
+
 
     router.get("/",function(req,res){
         res.json({"Message" : "Hello World !"});
@@ -40,6 +43,10 @@ REST_ROUTER.prototype.handleRoutes = function(router,md5) {
       else {
         res.status(200).send({code:200});
       }
+    });
+
+    router.get("/turn/:idJoueur", function(req,res){
+        res.status(200).send({status:0,tableau:board,nbTenaillesJ1:joueur1.tenaille,nbTenaillesJ2:joueur2.tenaille,dernierCoupX:partie.lastCoup.x,dernierCoupY:partie.lastCoup.y,prolongation:partie.prolongation,finPartie:partie.endOfGame,detailFinPartie:"",numTour:partie.lap,code:200});
     });
 
     router.post("/localisation",function(req,res){

@@ -1,0 +1,1 @@
+define({  "name": "Node RESTFULL API",  "version": "1.0.0",  "description": "Simple restufull node api",  "title": "NODE API",  "sampleUrl": false,  "defaultVersion": "0.0.0",  "apidoc": "0.3.0",  "generator": {    "name": "apidoc",    "time": "2017-03-19T01:39:58.912Z",    "url": "http://apidocjs.com",    "version": "0.17.5"  }});

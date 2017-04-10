@@ -7,8 +7,8 @@ function REST_ROUTER(router,connection,md5) {
 
 REST_ROUTER.prototype.handleRoutes = function(router,md5) {
     var self = this;
-    // board, tableau d'entier a deux dimensions
-    var grades = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    // board
+    var board = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -49,7 +49,8 @@ REST_ROUTER.prototype.handleRoutes = function(router,md5) {
                   joueur2.idJoueur = md5(req.params.groupName)
                   res.status(200).send({idjoueur:md5(req.params.groupName),code:200,nomJoueur:req.params.groupName});
                 }
-                else {
+                else
+                {
                   res.status(401).send({code:401});
                 }
     });
@@ -61,21 +62,35 @@ REST_ROUTER.prototype.handleRoutes = function(router,md5) {
       res.status(401).send({code:401});
       }
       else {
-        //Le joueur 1 place un pion
-        if(req.params.idJoueur == joueur1.idJoueur)
-        {
-          grades[req.params.x][req.params.y] = 1
-          res.status(200).send({code:200});
-        }
-        //Le joueur 2 place un pion
-        if(req.params.idJoueur == joueur2.idJoueur)
-        {
-          grades[req.params.x][req.params.y] = 2
-          res.status(200).send({code:200});
-        }
+          //Les coordonnées sont acceptables
+          if(isPositionInBound(req.params.x,req.params.y))
+          {
+            //Le joueur 1 place un pion
+            if(req.params.idJoueur == joueur1.idJoueur)
+            {
+              board[req.params.x][req.params.y] = 1
+              res.status(200).send({code:200});
+            }
+            //Le joueur 2 place un pion
+            if(req.params.idJoueur == joueur2.idJoueur)
+            {
+              board[req.params.x][req.params.y] = 2
+              res.status(200).send({code:200});
+            }
+          }
+          //Les coordonnées ne sont pas acceptables
+          else
+          {
+            res.status(406).send({code:406});
+          }
       }
     });
 
+    // Les valeurs [x,y] sont dans la board et la position est disponible
+    function isPositionInBound(coordX,coordY)
+    {
+      return((coordX >= 0 && coordX <= 18) && (coordY >=0 && coordY <= 18) && (board[coordX][coordY] == 0))
+    }
 }
 
 module.exports = REST_ROUTER;

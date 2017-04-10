@@ -7,6 +7,28 @@ function REST_ROUTER(router,connection,md5) {
 
 REST_ROUTER.prototype.handleRoutes = function(router,md5) {
     var self = this;
+    // board, tableau d'entier a deux dimensions
+    var grades = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+
+    //Gamers parameters
     var joueur1 = {idJoueur:null,nomJoueur:null,tenaille:null}
     var joueur2 = {idJoueur:null,nomJoueur:null,tenaille:null}
 
@@ -33,55 +55,27 @@ REST_ROUTER.prototype.handleRoutes = function(router,md5) {
     });
 
     router.get("/play/:x/:y/:idJoueur",function(req,res){
-      if(req.params.idJoueur == joueur1.idJoueur && !req.params.idJoueur == joueur2.idJoueur)
+      //Id du joueur ne correspond ni au md5 du joueur1, ni du joueur 2
+      if(req.params.idJoueur != joueur1.idJoueur && !req.params.idJoueur != joueur2.idJoueur)
       {
       res.status(401).send({code:401});
       }
       else {
-        res.status(200).send({code:200});
+        //Le joueur 1 place un pion
+        if(req.params.idJoueur == joueur1.idJoueur)
+        {
+          grades[req.params.x][req.params.y] = 1
+          res.status(200).send({code:200});
+        }
+        //Le joueur 2 place un pion
+        if(req.params.idJoueur == joueur2.idJoueur)
+        {
+          grades[req.params.x][req.params.y] = 2
+          res.status(200).send({code:200});
+        }
       }
     });
 
-    router.post("/localisation",function(req,res){
-        var query = "INSERT INTO ??(??,??,??,??) VALUES (?,?,?,?)";
-        var table = ["localisation","commune","code_postal","departement","insee",req.body.commune,req.body.code_postal,req.body.departement,req.body.insee];
-        query = mysql.format(query,table);
-        connection.query(query,function(err,rows){
-            if(err) {
-                res.json({"Error" : true, "Message" : "Error executing MySQL query"});
-            } else {
-                res.json({"Error" : false, "Message" : "Localisation Added !"});
-            }
-        });
-    });
-
-
-    router.put("/localisation",function(req,res){
-        var query = "UPDATE localisation SET commune = ?,code_postal = ?,departement = ?,insee = ? WHERE id = ?";
-        var table = [req.body.commune,req.body.code_postal,req.body.departement,req.body.insee,req.body.id];
-        query = mysql.format(query,table);
-        connection.query(query,function(err,rows){
-            if(err) {
-                res.json({"Error" : true, "Message" : "Error executing MySQL query"});
-            } else {
-                res.json({"Error" : false, "Message" : "Updated localisation "+req.body.id});
-            }
-        });
-    });
-
-
-    router.delete("/localisation/:localisation_id",function(req,res){
-        var query = "DELETE from ?? WHERE ??=?";
-        var table = ["localisation","id",req.params.localisation_id];
-        query = mysql.format(query,table);
-        connection.query(query,function(err,rows){
-            if(err) {
-                res.json({"Error" : true, "Message" : "Error executing MySQL query"});
-            } else {
-                res.json({"Error" : false, "Message" : "Deleted the user with id "+req.params.localisation_id});
-            }
-        });
-    });
 }
 
 module.exports = REST_ROUTER;

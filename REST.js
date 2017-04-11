@@ -134,8 +134,6 @@ REST_ROUTER.prototype.handleRoutes = function(router,md5) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-
-
     function timedCount() {
         timerManche = timerManche+ 1;
         timerGame= timerGame +1;
@@ -154,7 +152,7 @@ REST_ROUTER.prototype.handleRoutes = function(router,md5) {
     function checkGameTime(){
         if(timerGame==602){
             partie.prolongation=true;
-            console.log("MortSubite");
+            console.log("Mort Subite");
         }
     }
     function startCount() {

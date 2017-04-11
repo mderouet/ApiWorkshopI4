@@ -4,6 +4,8 @@ function REST_ROUTER(router,connection,md5) {
     self.handleRoutes(router,connection,md5);
 }
 
+
+
 REST_ROUTER.prototype.handleRoutes = function(router,md5) {
     var self = this;
     // board
@@ -31,8 +33,11 @@ REST_ROUTER.prototype.handleRoutes = function(router,md5) {
     var joueur1 = {idJoueur:null,nomJoueur:null,tenaille:null}
     var joueur2 = {idJoueur:null,nomJoueur:null,tenaille:null}
     var partie = {lap:0,status:null, lastCoup:{x:null,y:null},endOfGame:false, prolongation:false }
-    var whoPlay=getRandomInt(1,2);
-    var time=0;
+    var whoPlay=null;
+    var timerManche = 0;
+    var timerGame=0;
+    var t;
+    var timer_is_on = 0;
 
     router.get("/",function(req,res){
         res.json({"Message" : "Hello World !"});
@@ -47,9 +52,10 @@ REST_ROUTER.prototype.handleRoutes = function(router,md5) {
                 }
                 else if(joueur2.idJoueur == null)
                 {
-                  joueur2.nomJoueur = req.params.groupName
-                  joueur2.idJoueur = md5(req.params.groupName)
-                  res.status(200).send({idjoueur:md5(req.params.groupName),code:200,nomJoueur:req.params.groupName});
+                    joueur2.nomJoueur = req.params.groupName;
+                    joueur2.idJoueur = md5(req.params.groupName);
+                    whoPlay=1;
+                    res.status(200).send({idjoueur:md5(req.params.groupName),code:200,nomJoueur:req.params.groupName});
                 }
                 else
                 {
@@ -68,12 +74,25 @@ REST_ROUTER.prototype.handleRoutes = function(router,md5) {
           if (isPositionInBound(req.params.x, req.params.y)) {
               //Le joueur 1 place un pion
               if (req.params.idJoueur == joueur1.idJoueur) {
-                  board[req.params.x][req.params.y] = 1
+                  board[req.params.x][req.params.y] = 1;
+                  partie.lap=partie.lap+1;
+                  partie.lastCoup.x=req.params.y;
+                  partie.lastCoup.y=req.params.x;
+                  if(partie.lap==1){
+                      startCount();
+                  }else{
+                      restartCount()
+                  }
                   res.status(200).send({code: 200});
               }
               //Le joueur 2 place un pion
               if (req.params.idJoueur == joueur2.idJoueur) {
-                  board[req.params.x][req.params.y] = 2
+                  board[req.params.x][req.params.y] = 2;
+                  partie.lap=partie.lap+1;
+                  partie.lastCoup.x=req.params.y;
+                  partie.lastCoup.y=req.params.x;
+                  restartCount()
+
                   res.status(200).send({code: 200});
               }
           }
@@ -113,6 +132,46 @@ REST_ROUTER.prototype.handleRoutes = function(router,md5) {
     function getRandomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
+
+
+
+    function timedCount() {
+        timerManche = timerManche+ 1;
+        timerGame= timerGame +1;
+        checkC();
+        checkGameTime();
+        t = setTimeout(function(){timedCount()}, 1000);
+    }
+    function checkC(){
+        if(timerManche==12){
+            partie.endOfGame=true;
+            console.log('loose');
+            stopCount();
+        }
+    }
+    function checkGameTime(){
+        if(timerGame==602){
+            partie.prolongation=true;
+            console.log("MortSubite");
+        }
+    }
+    function startCount() {
+        if (!timer_is_on) {
+            timer_is_on = 1;
+            timedCount();
+        }
+    }
+
+    function stopCount() {
+        clearTimeout(t);
+        timer_is_on = 0;
+    }
+    function restartCount(){
+        stopCount();
+        timerManche=0;
+        startCount();
+    }
+
 }
 
 module.exports = REST_ROUTER;

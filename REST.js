@@ -18,14 +18,32 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
   var timer_is_on;
   init();
 
-  function init()
-  {
+  function init() {
     //Gamers parameters
-    joueur1 = {idJoueur:null,nomJoueur:null,tenaille:null,status:null}
-    joueur2 = {idJoueur:null,nomJoueur:null,tenaille:null,status:null}
-    partie = {lap:0,lastCoup:{x:null,y:null},endOfGame:false,detailFinPartie:null, prolongation:false }
+    joueur1 = {
+      idJoueur: null,
+      nomJoueur: null,
+      tenaille: null,
+      status: null
+    }
+    joueur2 = {
+      idJoueur: null,
+      nomJoueur: null,
+      tenaille: null,
+      status: null
+    }
+    partie = {
+      lap: 0,
+      lastCoup: {
+        x: null,
+        y: null
+      },
+      endOfGame: false,
+      detailFinPartie: null,
+      prolongation: false
+    }
     timerManche = 0;
-    timerGame=0;
+    timerGame = 0;
     timer_is_on = 0;
 
     //Init board
@@ -53,128 +71,168 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
     console.log("Built by gamers for gamers, waiting for players...")
   }
 
-    router.get("/",function(req,res){
-        res.json({"Message" : "Hello World !"});
+  router.get("/", function(req, res) {
+    res.json({
+      "Message": "Hello World !"
     });
+  });
 
-    router.get("/connect/:groupName",function(req,res){
-                if(joueur1.idJoueur == null)
-                {
-                  joueur1.nomJoueur = req.params.groupName
-                  joueur1.idJoueur = md5(req.params.groupName)
-                  console.log("Connection Joueur1  [idJoueur : " + joueur1.idJoueur + " nomJoueur : " + joueur1.nomJoueur + "]")
+  router.get("/connect/:groupName", function(req, res) {
+    if (joueur1.idJoueur == null) {
+      joueur1.nomJoueur = req.params.groupName
+      joueur1.idJoueur = md5(req.params.groupName)
+      console.log("Connection Joueur1  [idJoueur : " + joueur1.idJoueur + " nomJoueur : " + joueur1.nomJoueur + "]")
 
-                  //On renvoi le md5 correspondant a groupName comme identifiant à l'utilisateur
-                  res.status(200).send({idjoueur:md5(req.params.groupName),code:200,nomJoueur:req.params.groupName});
-                }
-                else if(joueur2.idJoueur == null)
-                {
-                    joueur2.nomJoueur = req.params.groupName;
-                    joueur2.idJoueur = md5(req.params.groupName);
-                    console.log("Connection Joueur2  [idJoueur : " + joueur2.idJoueur + " nomJoueur : " + joueur2.nomJoueur + "]")
+      //On renvoi le md5 correspondant a groupName comme identifiant à l'utilisateur
+      res.status(200).send({
+        idjoueur: md5(req.params.groupName),
+        code: 200,
+        nomJoueur: req.params.groupName
+      });
+    } else if (joueur2.idJoueur == null) {
+      joueur2.nomJoueur = req.params.groupName;
+      joueur2.idJoueur = md5(req.params.groupName);
+      console.log("Connection Joueur2  [idJoueur : " + joueur2.idJoueur + " nomJoueur : " + joueur2.nomJoueur + "]")
 
-                    //Le joueur 1 commence à jouer
-                    joueur1.status = 1
-                    joueur2.status = 0
+      //Le joueur 1 commence à jouer
+      joueur1.status = 1
+      joueur2.status = 0
 
-                    console.log("Debut de la partie : "+"En attente du joueur1 ")
-                    //On renvoi le md5 correspondant a groupName comme identifiant à l'utilisateur
-                    res.status(200).send({idjoueur:md5(req.params.groupName),code:200,nomJoueur:req.params.groupName});
-                }
-                else
-                {
-                  //Retourné quand la partie est déjà en cours et que l'utilisateur n'est pas autorisé à joueur.
-                  res.status(401).send({code:401});
-                }
-    });
+      console.log("Debut de la partie : " + "En attente du joueur1 ")
+        //On renvoi le md5 correspondant a groupName comme identifiant à l'utilisateur
+      res.status(200).send({
+        idjoueur: md5(req.params.groupName),
+        code: 200,
+        nomJoueur: req.params.groupName
+      });
+    } else {
+      //Retourné quand la partie est déjà en cours et que l'utilisateur n'est pas autorisé à joueur.
+      res.status(401).send({
+        code: 401
+      });
+    }
+  });
 
 
 
 
-    router.get("/play/:x/:y/:idJoueur",function(req,res){
-      var currentIdJoueur = joueur1.idJoueur
-      if(joueur2.status == 1)
-      {
-        currentIdJoueur = joueur2.idJoueur
+  router.get("/play/:x/:y/:idJoueur", function(req, res) {
+    var currentIdJoueur = joueur1.idJoueur
+    if (joueur2.status == 1) {
+      currentIdJoueur = joueur2.idJoueur
+    }
+    //Id du joueur ne correspond ni au md5 du joueur1, ni du joueur 2
+    if (((req.params.idJoueur != joueur1.idJoueur) && (req.params.idJoueur != joueur2.idJoueur)) || req.params.idJoueur != currentIdJoueur) {
+      //Retourné quand le joueur n'est pas autorisé (nom du joueur non valide pour la partie)
+      res.status(401).send({
+        code: 401
+      });
+    } else {
+      //Remontée d'erreur
+      var erreur = {
+        isOnBoard: null,
+        isPositionDisponible: null,
+        isEnd: null
+      };
+      erreur.isOnBoard = isPositionInBound(req.params.x, req.params.y);
+      erreur.isPositionDisponible = isPositionAvailable(req.params.y, req.params.x);
+      erreur.isEnd = partie.endOfGame;
+
+      // Vérification si la pos est dans la board, egal a 0 et si un des joueurs a un statut qui permet de jouer et que ce n'est pas la fin de la partie
+      if (isPositionInBound(req.params.x, req.params.y) && isPositionAvailable(req.params.y, req.params.x) && partie.endOfGame == false && ((joueur1.status == 1) || (joueur2.status == 1))) {
+        //Le joueur 1 place un pion
+        if (req.params.idJoueur == joueur1.idJoueur) {
+          board[req.params.y][req.params.x] = 1;
+          partie.lap = partie.lap + 1;
+          partie.lastCoup.x = req.params.x;
+          partie.lastCoup.y = req.params.y;
+          if (partie.lap == 1) {
+            startCount();
+          } else {
+            restartCount()
+          }
+          //Mise à jour du nombre de tenaille du joueur 1
+          joueur1.nombreTenaille += tenailleNumber(req.params.y, req.params.x)
+            //On change le statut du joueur
+          joueur1.status = 0
+          joueur2.status = 1
+            //Log de la partie
+          console.log("Joueur1 place pion en [" + req.params.x + "," + req.params.y + "]")
+          console.log("En attente du joueur 2...")
+        }
+        //Le joueur 2 place un pion
+        if (req.params.idJoueur == joueur2.idJoueur) {
+          board[req.params.y][req.params.x] = 2;
+          partie.lap = partie.lap + 1;
+          partie.lastCoup.x = req.params.x;
+          partie.lastCoup.y = req.params.y;
+          restartCount();
+          //Mise à jour du nombre de tenaille du joueur 2
+          joueur2.nombreTenaille += tenailleNumber(req.params.y, req.params.x)
+            //On change le statut du joueur
+          joueur1.status = 1
+          joueur2.status = 0
+            //Log de la partie
+          console.log("Joueur2 place pion en [" + req.params.x + "," + req.params.y + "]")
+          console.log("En attente du joueur 1...")
+        }
+        res.status(200).send({
+          code: 200
+        });
       }
-      //Id du joueur ne correspond ni au md5 du joueur1, ni du joueur 2
-      if(((req.params.idJoueur != joueur1.idJoueur) && (req.params.idJoueur != joueur2.idJoueur)) || req.params.idJoueur != currentIdJoueur)
-      {
-        //Retourné quand le joueur n'est pas autorisé (nom du joueur non valide pour la partie)
-      res.status(401).send({code:401});
-      }
+      //Les coordonnées ne sont pas acceptables
       else {
-        //Remontée d'erreur
-        var erreur = {isOnBoard:null,isPositionDisponible:null,isEnd:null};
-        erreur.isOnBoard = isPositionInBound(req.params.x, req.params.y);
-        erreur.isPositionDisponible = isPositionAvailable(req.params.y, req.params.x);
-        erreur.isEnd = partie.endOfGame;
-
-        // Vérification si la pos est dans la board, egal a 0 et si un des joueurs a un statut qui permet de jouer et que ce n'est pas la fin de la partie
-          if (isPositionInBound(req.params.x, req.params.y)  && isPositionAvailable(req.params.y, req.params.x) && partie.endOfGame == false && ((joueur1.status == 1)||(joueur2.status == 1))) {
-              //Le joueur 1 place un pion
-              if (req.params.idJoueur == joueur1.idJoueur) {
-                  board[req.params.y][req.params.x] = 1;
-                  partie.lap=partie.lap+1;
-                  partie.lastCoup.x=req.params.x;
-                  partie.lastCoup.y=req.params.y;
-                  if(partie.lap==1){
-                      startCount();
-                  }else{
-                      restartCount()
-                  }
-                  //Mise à jour du nombre de tenaille du joueur 1
-                  joueur1.nombreTenaille += tenailleNumber(req.params.y,req.params.x)
-                  //On change le statut du joueur
-                  joueur1.status = 0
-                  joueur2.status = 1
-                  //Log de la partie
-                  console.log("Joueur1 place pion en ["+req.params.x+","+req.params.y+"]")
-                  console.log("En attente du joueur 2...")
-              }
-              //Le joueur 2 place un pion
-              if (req.params.idJoueur == joueur2.idJoueur) {
-                  board[req.params.y][req.params.x] = 2;
-                  partie.lap=partie.lap+1;
-                  partie.lastCoup.x=req.params.x;
-                  partie.lastCoup.y=req.params.y;
-                  restartCount();
-                  //Mise à jour du nombre de tenaille du joueur 2
-                  joueur2.nombreTenaille += tenailleNumber(req.params.y,req.params.x)
-                  //On change le statut du joueur
-                  joueur1.status = 1
-                  joueur2.status = 0
-                  //Log de la partie
-                  console.log("Joueur2 place pion en ["+req.params.x+","+req.params.y+"]")
-                  console.log("En attente du joueur 1...")
-              }
-              res.status(200).send({code: 200});
-          }
-          //Les coordonnées ne sont pas acceptables
-          else {
-              // Tentative de placement de point raté
-              console.log("Demande de placement de :" + currentIdJoueur +"en"+ "["+req.params.x+","+req.params.y+"]");
-              console.log(erreur);
-              //Retourné quand le coup n'est pas valide
-              res.status(406).send({code: 406});
-          }
+        // Tentative de placement de point raté
+        console.log("Demande de placement de :" + currentIdJoueur + "en" + "[" + req.params.x + "," + req.params.y + "]");
+        console.log(erreur);
+        //Retourné quand le coup n'est pas valide
+        res.status(406).send({
+          code: 406
+        });
       }
+    }
+  });
+
+  router.get("/turn/:idJoueur", function(req, res) {
+    if (req.params.idJoueur == joueur1.idJoueur) {
+
+      res.status(200).send({
+        status: joueur1.status,
+        tableau: board,
+        nbTenaillesJ1: joueur1.tenaille,
+        nbTenaillesJ2: joueur2.tenaille,
+        dernierCoupX: partie.lastCoup.x,
+        dernierCoupY: partie.lastCoup.y,
+        prolongation: partie.prolongation,
+        finPartie: partie.endOfGame,
+        detailFinPartie: partie.detailFinPartie,
+        numTour: partie.lap,
+        code: 200
       });
 
-        router.get("/turn/:idJoueur", function(req,res){
-            if(req.params.idJoueur == joueur1.idJoueur){
+    } else if (req.params.idJoueur == joueur2.idJoueur) {
 
-                res.status(200).send({status:joueur1.status,tableau:board,nbTenaillesJ1:joueur1.tenaille,nbTenaillesJ2:joueur2.tenaille,dernierCoupX:partie.lastCoup.x,dernierCoupY:partie.lastCoup.y,prolongation:partie.prolongation,finPartie:partie.endOfGame,detailFinPartie:partie.detailFinPartie,numTour:partie.lap,code:200});
+      res.status(200).send({
+        status: joueur2.status,
+        tableau: board,
+        nbTenaillesJ1: joueur1.tenaille,
+        nbTenaillesJ2: joueur2.tenaille,
+        dernierCoupX: partie.lastCoup.x,
+        dernierCoupY: partie.lastCoup.y,
+        prolongation: partie.prolongation,
+        finPartie: partie.endOfGame,
+        detailFinPartie: partie.detailFinPartie,
+        numTour: partie.lap,
+        code: 200
+      });
 
-            }else if(req.params.idJoueur == joueur2.idJoueur){
-
-                res.status(200).send({status:joueur2.status,tableau:board,nbTenaillesJ1:joueur1.tenaille,nbTenaillesJ2:joueur2.tenaille,dernierCoupX:partie.lastCoup.x,dernierCoupY:partie.lastCoup.y,prolongation:partie.prolongation,finPartie:partie.endOfGame,detailFinPartie:partie.detailFinPartie,numTour:partie.lap,code:200});
-
-            }else{
-              //Retourné quand le joueur n'est pas autorisé (nom du joueur non valide pour la partie)
-                res.status(401).send({code:401});
-              }
-          });
+    } else {
+      //Retourné quand le joueur n'est pas autorisé (nom du joueur non valide pour la partie)
+      res.status(401).send({
+        code: 401
+      });
+    }
+  });
 
   function tenailleNumber(y, x) {
     var nombreTenaille = 0
@@ -314,8 +372,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
 
   //la position est disponible (symbolisé par un 0 sur le board)
   function isPositionAvailable(coordY, coordX) {
-    if(isPositionInBound(coordX,coordY))
-    {
+    if (isPositionInBound(coordX, coordY)) {
       return (board[coordY][coordX] == 0);
     }
     return false;
@@ -324,56 +381,61 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
   function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
-    function timedCount() {
-        timerManche = timerManche + 1;
-        timerGame= timerGame +1;
-        //Logging timer
-        if(joueur1.status != null || joueur2.status != null)
-        {
-        console.log(timerManche);
-        }
-        checkC();
-        checkGameTime();
-        t = setTimeout(function(){timedCount()}, 1000);
-    }
-    function checkC(){
-        if(timerManche>10){
-            partie.endOfGame=true;
-            partie.detailFinPartie="Temps dépassé"
 
-            var messageFin = "Temps dépasse, le joueur : " + joueur1.nomJoueur + " gagne !"
-            if(joueur2.status == 1)
-            {
-              messageFin = "Temps dépasse, le joueur2 : " + joueur2.nomJoueur + " gagne !"
-            }
-            console.log(messageFin);
-            stopCount();
-            //Remise à zéro de la partie
-            init();
-        }
+  function timedCount() {
+    timerManche = timerManche + 1;
+    timerGame = timerGame + 1;
+    //Logging timer
+    if (joueur1.status != null || joueur2.status != null) {
+      console.log(timerManche);
     }
-    function checkGameTime(){
-        if(timerGame==602){
-            partie.prolongation=true;
-            console.log("Mort Subite");
-        }
-    }
-    function startCount() {
-        if (!timer_is_on) {
-            timer_is_on = 1;
-            timedCount();
-        }
-    }
+    checkC();
+    checkGameTime();
+    t = setTimeout(function() {
+      timedCount()
+    }, 1000);
+  }
 
-    function stopCount() {
-        clearTimeout(t);
-        timer_is_on = 0;
+  function checkC() {
+    if (timerManche > 10) {
+      partie.endOfGame = true;
+      partie.detailFinPartie = "Temps dépassé"
+
+      var messageFin = "Temps dépasse, le joueur : " + joueur1.nomJoueur + " gagne !"
+      if (joueur2.status == 1) {
+        messageFin = "Temps dépasse, le joueur2 : " + joueur2.nomJoueur + " gagne !"
+      }
+      console.log(messageFin);
+      stopCount();
+      //Remise à zéro de la partie
+      init();
     }
-    function restartCount(){
-        stopCount();
-        timerManche=0;
-        startCount();
+  }
+
+  function checkGameTime() {
+    if (timerGame == 602) {
+      partie.prolongation = true;
+      console.log("Mort Subite");
     }
+  }
+
+  function startCount() {
+    if (!timer_is_on) {
+      timer_is_on = 1;
+      timedCount();
+    }
+  }
+
+  function stopCount() {
+    clearTimeout(t);
+    timer_is_on = 0;
+  }
+
+  function restartCount() {
+    stopCount();
+    timerManche = 0;
+    startCount();
+  }
 }
 
 module.exports = REST_ROUTER;

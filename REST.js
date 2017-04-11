@@ -31,8 +31,8 @@ REST_ROUTER.prototype.handleRoutes = function(router,md5) {
     //Gamers parameters
     var joueur1 = {idJoueur:null,nomJoueur:null,tenaille:null}
     var joueur2 = {idJoueur:null,nomJoueur:null,tenaille:null}
-    var partie = {lap:0, lastCoup:{x:null,y:null},endOfGame:false, prolongation:false }
-
+    var partie = {lap:0,status:null, lastCoup:{x:null,y:null},endOfGame:false, prolongation:false }
+    var time=0;
 
     router.get("/",function(req,res){
         res.json({"Message" : "Hello World !"});

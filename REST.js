@@ -238,7 +238,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
     }
   });
 
-  function tenailleNumber(y, x) {
+  function tenailleNumber(y,x) {
+    y = parseInt(y)
+    x = parseInt(x)
     var nombreTenaille = 0
     var value = board[y][x]
     var inverse = 1
@@ -310,6 +312,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
     //Position possible
     if (isPositionInBound(y + 3, x + 3)) {
       //Présence d'une tenaille suite au coup joué
+      console.log(board[y + 3][x + 3])
       if (board[y + 3][x + 3] == value) {
         //Si les positions existent on vérifie la valeur des cases
         if (board[y + 1][x + 1] == inverse && board[y + 2][x + 2] == inverse) {
@@ -401,7 +404,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
   }
     //Verification du temps du round
   function checkC() {
-    if (timerManche > 10) {
+    if (timerManche > 60) {
       partie.endOfGame = true;
       partie.detailFinPartie = "Temps dépassé"
 
@@ -440,6 +443,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
     startCount();
   }
     function checkTheFiveWin(x, y){
+      y = parseInt(y)
+      x = parseInt(x)
+
         /// Tableau Ligne ///
         var tabLigneDroite = []
         var tabLigneGauche = []
@@ -478,8 +484,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         for(var r = 0; r < tabLigneDroite.length; r++){
             tabSchemaLigne.push(tabLigneDroite[r])
         }
-        console.log("- : ")
-        console.log(tabSchemaLigne)
+        //console.log("- : ")
+        //console.log(tabSchemaLigne)
 
         //// Colonne ////
 
@@ -501,8 +507,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         for(var r = 0; r < tabColonneBas.length; r++){
             tabSchemaColonne.push(tabColonneBas[r])
         }
-        console.log("| : ")
-        console.log(tabSchemaColonne)
+        //console.log("| : ")
+        //console.log(tabSchemaColonne)
 
         //// Diagonal Droite ////
         for(var i = 1 ; i < 6; i++){
@@ -525,8 +531,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
             tabSchemaDiagoDroite.push(tabDiagoHautDroite[r])
         }
 
-        console.log( " \\ : ")
-        console.log(tabSchemaDiagoDroite)
+        //console.log( " \\ : ")
+        //console.log(tabSchemaDiagoDroite)
         //// Diagonal Gauche ////
         for(var i = 1 ; i < 6; i++){
             if(isPositionInBound(x+i,y+i)){
@@ -547,16 +553,15 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
             taSchemaDiagoGauche.push(tabDiagoHautGauche[r])
         }
 
-        console.log( " / : ")
-        console.log(taSchemaDiagoGauche)
-        console.log("--------------------------------------")
+        //console.log( " / : ")
+        //console.log(taSchemaDiagoGauche)
+        //console.log("--------------------------------------")
 
         var fiveAlignement=0;
         //check 5 ligne
         for(var e=0;e<tabSchemaLigne.length;e++){
             if(fiveAlignement!=5){
                 if(tabSchemaLigne[e] == board[y][x]){
-                    console.log('ici');
                     fiveAlignement++;
                 }else{
                     fiveAlignement=0;
@@ -568,7 +573,6 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
             for(var e=0;e<tabSchemaColonne.length;e++){
                 if(fiveAlignement!=5){
                     if(tabSchemaColonne[e] == board[y][x]){
-                        console.log('ici');
                         fiveAlignement++;
                     }else{
                         fiveAlignement=0;
@@ -581,7 +585,6 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
             for(var e=0;e<tabSchemaDiagoDroite.length;e++){
                 if(fiveAlignement!=5){
                     if(tabSchemaDiagoDroite[e] == board[y][x]){
-                        console.log('ici');
                         fiveAlignement++;
                     }else{
                         fiveAlignement=0;
@@ -594,7 +597,6 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
             for(var e=0;e<taSchemaDiagoGauche.length;e++){
                 if(fiveAlignement!=5){
                     if(taSchemaDiagoGauche[e] == board[y][x]){
-                        console.log('ici');
                         fiveAlignement++;
                     }else{
                         fiveAlignement=0;

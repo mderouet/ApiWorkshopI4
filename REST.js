@@ -30,7 +30,7 @@ REST_ROUTER.prototype.handleRoutes = function(router,md5) {
     //Gamers parameters
     var joueur1 = {idJoueur:null,nomJoueur:null,tenaille:null}
     var joueur2 = {idJoueur:null,nomJoueur:null,tenaille:null}
-    var partie = {lap:0,status:null, lastCoup:{x:null,y:null},endOfGame:false, prolongation:false }
+    var partie = {lap:getRandomInt(1,2),status:null, lastCoup:{x:null,y:null},endOfGame:false, prolongation:false }
     var time=0;
 
     router.get("/",function(req,res){
@@ -90,6 +90,9 @@ REST_ROUTER.prototype.handleRoutes = function(router,md5) {
     function isPositionInBound(coordX,coordY)
     {
       return((coordX >= 0 && coordX <= 18) && (coordY >=0 && coordY <= 18) && (board[coordX][coordY] == 0))
+    }
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 }
 

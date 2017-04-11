@@ -32,7 +32,7 @@ REST_ROUTER.prototype.handleRoutes = function(router,md5) {
     //Gamers parameters
     var joueur1 = {idJoueur:null,nomJoueur:null,tenaille:null}
     var joueur2 = {idJoueur:null,nomJoueur:null,tenaille:null}
-    var partie = {lap:0,status:null, lastCoup:{x:null,y:null},endOfGame:false, prolongation:false }
+    var partie = {lap:0,status:null, lastCoup:{x:null,y:null},endOfGame:false,detailFinPartie:null, prolongation:false }
     var whoPlay=null;
     var timerManche = 0;
     var timerGame=0;
@@ -91,7 +91,7 @@ REST_ROUTER.prototype.handleRoutes = function(router,md5) {
                   partie.lap=partie.lap+1;
                   partie.lastCoup.x=req.params.y;
                   partie.lastCoup.y=req.params.x;
-                  restartCount()
+                  restartCount();
 
                   res.status(200).send({code: 200});
               }
@@ -103,13 +103,14 @@ REST_ROUTER.prototype.handleRoutes = function(router,md5) {
       }
       });
         router.get("/turn/:idJoueur", function(req,res){
+            console.log(timerManche+" : "+timerGame);
             if(req.params.idJoueur == joueur1.idJoueur){
                 if(whoPlay==1){
                     partie.status=1;
                 }else{
                     partie.status=0;
                 }
-                res.status(200).send({status:partie.status,tableau:board,nbTenaillesJ1:joueur1.tenaille,nbTenaillesJ2:joueur2.tenaille,dernierCoupX:partie.lastCoup.x,dernierCoupY:partie.lastCoup.y,prolongation:partie.prolongation,finPartie:partie.endOfGame,detailFinPartie:"",numTour:partie.lap,code:200});
+                res.status(200).send({status:partie.status,tableau:board,nbTenaillesJ1:joueur1.tenaille,nbTenaillesJ2:joueur2.tenaille,dernierCoupX:partie.lastCoup.x,dernierCoupY:partie.lastCoup.y,prolongation:partie.prolongation,finPartie:partie.endOfGame,detailFinPartie:partie.detailFinPartie,numTour:partie.lap,code:200});
 
             }else if(req.params.idJoueur == joueur2.idJoueur){
                 if(whoPlay==2){
@@ -117,7 +118,7 @@ REST_ROUTER.prototype.handleRoutes = function(router,md5) {
                 }else{
                     partie.status=0;
                 }
-                res.status(200).send({status:partie.status,tableau:board,nbTenaillesJ1:joueur1.tenaille,nbTenaillesJ2:joueur2.tenaille,dernierCoupX:partie.lastCoup.x,dernierCoupY:partie.lastCoup.y,prolongation:partie.prolongation,finPartie:partie.endOfGame,detailFinPartie:"",numTour:partie.lap,code:200});
+                res.status(200).send({status:partie.status,tableau:board,nbTenaillesJ1:joueur1.tenaille,nbTenaillesJ2:joueur2.tenaille,dernierCoupX:partie.lastCoup.x,dernierCoupY:partie.lastCoup.y,prolongation:partie.prolongation,finPartie:partie.endOfGame,detailFinPartie:partie.detailFinPartie,numTour:partie.lap,code:200});
 
             }else{
                 res.status(401).send({code:401});
@@ -145,6 +146,7 @@ REST_ROUTER.prototype.handleRoutes = function(router,md5) {
     function checkC(){
         if(timerManche==12){
             partie.endOfGame=true;
+            partie.detailFinPartie="Temps dépassé"
             console.log('loose');
             stopCount();
         }
@@ -171,7 +173,6 @@ REST_ROUTER.prototype.handleRoutes = function(router,md5) {
         timerManche=0;
         startCount();
     }
-
 }
 
 module.exports = REST_ROUTER;

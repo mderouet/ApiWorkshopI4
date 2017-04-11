@@ -31,7 +31,8 @@ REST_ROUTER.prototype.handleRoutes = function(router,md5) {
     //Gamers parameters
     var joueur1 = {idJoueur:null,nomJoueur:null,tenaille:null}
     var joueur2 = {idJoueur:null,nomJoueur:null,tenaille:null}
-    var partie = {lap:0, lastCoup:{x:null,y:null},endOfGame:false, prolongation:false }
+    var partie = {lap:0,status:null, lastCoup:{x:null,y:null},endOfGame:false, prolongation:false }
+    var time=0;
 
 
     router.get("/",function(req,res){
@@ -59,7 +60,8 @@ REST_ROUTER.prototype.handleRoutes = function(router,md5) {
 
     router.get("/play/:x/:y/:idJoueur",function(req,res){
       //Id du joueur ne correspond ni au md5 du joueur1, ni du joueur 2
-      if(req.params.idJoueur != joueur1.idJoueur && !req.params.idJoueur != joueur2.idJoueur)
+        console.log(req.params.idJoueur+" : "+joueur2.idJoueur);
+      if(req.params.idJoueur != joueur1.idJoueur && req.params.idJoueur != joueur2.idJoueur)
       {
       res.status(401).send({code:401});
       }
@@ -84,6 +86,7 @@ REST_ROUTER.prototype.handleRoutes = function(router,md5) {
       }
       });
         router.get("/turn/:idJoueur", function(req,res){
+
             res.status(200).send({status:0,tableau:board,nbTenaillesJ1:joueur1.tenaille,nbTenaillesJ2:joueur2.tenaille,dernierCoupX:partie.lastCoup.x,dernierCoupY:partie.lastCoup.y,prolongation:partie.prolongation,finPartie:partie.endOfGame,detailFinPartie:"",numTour:partie.lap,code:200});
         });
     

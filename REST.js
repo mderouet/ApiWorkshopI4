@@ -153,6 +153,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
           }
           //Mise à jour du nombre de tenaille du joueur 1
           joueur1.nombreTenaille += tenailleNumber(req.params.y, req.params.x)
+            //Verification de la victoire par 5 pions qui se suivent
+            checkTheFiveWin(req.params.y, req.params.x)
             //On change le statut du joueur
           joueur1.status = 0
           joueur2.status = 1
@@ -169,6 +171,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
           restartCount();
           //Mise à jour du nombre de tenaille du joueur 2
           joueur2.nombreTenaille += tenailleNumber(req.params.y, req.params.x)
+            //Verification de la victoire par 5 pions qui se suivent
+            checkTheFiveWin(req.params.y, req.params.x)
             //On change le statut du joueur
           joueur1.status = 1
           joueur2.status = 0
@@ -395,7 +399,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
       timedCount()
     }, 1000);
   }
-
+    //Verification du temps du round
   function checkC() {
     if (timerManche > 10) {
       partie.endOfGame = true;
@@ -411,7 +415,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
       init();
     }
   }
-
+    //Verification du temps de la partie et déclenchement de la mort subite
   function checkGameTime() {
     if (timerGame == 602) {
       partie.prolongation = true;
@@ -430,12 +434,181 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
     clearTimeout(t);
     timer_is_on = 0;
   }
-
   function restartCount() {
     stopCount();
     timerManche = 0;
     startCount();
   }
+    function checkTheFiveWin(x, y){
+        /// Tableau Ligne ///
+        var tabLigneDroite = []
+        var tabLigneGauche = []
+        var tabSchemaLigne = []
+
+        /// Tableau Colonne ///
+        var tabColonneHaut = []
+        var tabColonneBas = []
+        var tabSchemaColonne = []
+
+        /// Tableau Diago droite ///   ex : \
+        var tabDiagoHautDroite = []
+        var tabDiagoBasDroite = []
+        var tabSchemaDiagoDroite = []
+
+        /// Tableal Diago Gauche /// ex : /
+        var tabDiagoHautGauche = []
+        var tabDiagoBasGauche = []
+        var taSchemaDiagoGauche = []
+        //ligne
+        for(var i = 1 ; i < 6; i++){
+            if(isPositionInBound(x,y+i)){
+                tabLigneDroite.push(board[y + i][x])
+            }
+        }
+        for(var z = 1 ; z < 6 ; z++){
+            if(isPositionInBound(x,y-z)){
+                tabLigneGauche.push(board[y - z][x])
+            }
+        }
+
+        for(var e = tabLigneGauche.length -1; e != -1; e--){
+            tabSchemaLigne.push(tabLigneGauche[e])
+        }
+        tabSchemaLigne.push(1)
+        for(var r = 0; r < tabLigneDroite.length; r++){
+            tabSchemaLigne.push(tabLigneDroite[r])
+        }
+        console.log("- : ")
+        console.log(tabSchemaLigne)
+
+        //// Colonne ////
+
+        for(var i = 1 ; i < 6; i++){
+            if(isPositionInBound(x,y+i) ){
+                tabColonneHaut.push(board[y][x + i])
+            }
+        }
+        for(var z = 1 ; z < 6 ; z++){
+            if(isPositionInBound(x,y-z)){
+                tabColonneBas.push(board[y][x - z])
+            }
+        }
+
+        for(var e = tabColonneHaut.length -1; e != -1; e--){
+            tabSchemaColonne.push(tabColonneHaut[e])
+        }
+        tabSchemaColonne.push(1)
+        for(var r = 0; r < tabColonneBas.length; r++){
+            tabSchemaColonne.push(tabColonneBas[r])
+        }
+        console.log("| : ")
+        console.log(tabSchemaColonne)
+
+        //// Diagonal Droite ////
+        for(var i = 1 ; i < 6; i++){
+            if(isPositionInBound(x+i,y+i)){
+                tabDiagoHautDroite.push(board[y + i][x + i])
+            }
+        }
+        for(var z = 1 ; z < 6 ; z++){
+
+            if(isPositionInBound(x-z,y-z)){
+                tabDiagoBasDroite.push(board[y - z][x - z])
+            }
+        }
+
+        for(var e = tabDiagoBasDroite.length -1; e != -1; e--){
+            tabSchemaDiagoDroite.push(tabDiagoBasDroite[e])
+        }
+        tabSchemaDiagoDroite.push(1)
+        for(var r = 0; r < tabDiagoHautDroite.length; r++){
+            tabSchemaDiagoDroite.push(tabDiagoHautDroite[r])
+        }
+
+        console.log( " \\ : ")
+        console.log(tabSchemaDiagoDroite)
+        //// Diagonal Gauche ////
+        for(var i = 1 ; i < 6; i++){
+            if(isPositionInBound(x+i,y+i)){
+                tabDiagoHautGauche.push(board[y + i][x - i])
+            }
+        }
+        for(var z = 1 ; z < 6 ; z++){
+            if(isPositionInBound(x-z,y-z)){
+                tabDiagoBasGauche.push(board[y - z][x + z])
+            }
+        }
+
+        for(var e = tabDiagoBasGauche.length -1; e != -1; e--){
+            taSchemaDiagoGauche.push(tabDiagoBasGauche[e])
+        }
+        taSchemaDiagoGauche.push(1)
+        for(var r = 0; r < tabDiagoHautGauche.length; r++){
+            taSchemaDiagoGauche.push(tabDiagoHautGauche[r])
+        }
+
+        console.log( " / : ")
+        console.log(taSchemaDiagoGauche)
+        console.log("--------------------------------------")
+
+        var fiveAlignement=0;
+        //check 5 ligne
+        for(var e=0;e<tabSchemaLigne.length;e++){
+            if(fiveAlignement!=5){
+                if(tabSchemaLigne[e] == board[y][x]){
+                    console.log('ici');
+                    fiveAlignement++;
+                }else{
+                    fiveAlignement=0;
+                }
+            }
+        }
+        //check 5 colonne
+        if(fiveAlignement!=5){
+            for(var e=0;e<tabSchemaColonne.length;e++){
+                if(fiveAlignement!=5){
+                    if(tabSchemaColonne[e] == board[y][x]){
+                        console.log('ici');
+                        fiveAlignement++;
+                    }else{
+                        fiveAlignement=0;
+                    }
+                }
+            }
+        }
+        //check 5 diagoDroite
+        if(fiveAlignement!=5){
+            for(var e=0;e<tabSchemaDiagoDroite.length;e++){
+                if(fiveAlignement!=5){
+                    if(tabSchemaDiagoDroite[e] == board[y][x]){
+                        console.log('ici');
+                        fiveAlignement++;
+                    }else{
+                        fiveAlignement=0;
+                    }
+                }
+            }
+        }
+        //check 5 diagoGauche
+        if(fiveAlignement!=5){
+            for(var e=0;e<taSchemaDiagoGauche.length;e++){
+                if(fiveAlignement!=5){
+                    if(taSchemaDiagoGauche[e] == board[y][x]){
+                        console.log('ici');
+                        fiveAlignement++;
+                    }else{
+                        fiveAlignement=0;
+                    }
+                }
+            }
+        }
+        if(fiveAlignement==5){
+            //appel fonction victoire
+            console.log('WIN');
+        }
+    }
+
+
 }
 
 module.exports = REST_ROUTER;

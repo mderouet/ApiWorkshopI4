@@ -154,7 +154,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
           //Mise à jour du nombre de tenaille du joueur 1
           joueur1.nombreTenaille += tenailleNumber(req.params.y, req.params.x)
             //Verification de la victoire par 5 pions qui se suivent
-            checkTheFiveWin(req.params.y, req.params.x)
+          checkTheFiveWin(req.params.y, req.params.x)
             //On change le statut du joueur
           joueur1.status = 0
           joueur2.status = 1
@@ -172,7 +172,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
           //Mise à jour du nombre de tenaille du joueur 2
           joueur2.nombreTenaille += tenailleNumber(req.params.y, req.params.x)
             //Verification de la victoire par 5 pions qui se suivent
-            checkTheFiveWin(req.params.y, req.params.x)
+          checkTheFiveWin(req.params.y, req.params.x)
             //On change le statut du joueur
           joueur1.status = 1
           joueur2.status = 0
@@ -238,7 +238,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
     }
   });
 
-  function tenailleNumber(y,x) {
+  function tenailleNumber(y, x) {
     y = parseInt(y)
     x = parseInt(x)
     var nombreTenaille = 0
@@ -402,7 +402,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
       timedCount()
     }, 100);
   }
-    //Verification du temps du round
+  //Verification du temps du round
   function checkC() {
     if (timerManche > 60) {
       partie.endOfGame = true;
@@ -416,7 +416,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
       stopCount();
     }
   }
-    //Verification du temps de la partie et déclenchement de la mort subite
+  //Verification du temps de la partie et déclenchement de la mort subite
   function checkGameTime() {
     if (timerGame == 602) {
       partie.prolongation = true;
@@ -435,179 +435,181 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
     clearTimeout(t);
     timer_is_on = 0;
   }
+
   function restartCount() {
     stopCount();
     timerManche = 0;
     startCount();
   }
-    function checkTheFiveWin(x, y){
-      y = parseInt(y)
-      x = parseInt(x)
 
-        /// Tableau Ligne ///
-        var tabLigneDroite = []
-        var tabLigneGauche = []
-        var tabSchemaLigne = []
+  function checkTheFiveWin(x, y) {
+    y = parseInt(y)
+    x = parseInt(x)
 
-        /// Tableau Colonne ///
-        var tabColonneHaut = []
-        var tabColonneBas = []
-        var tabSchemaColonne = []
+    /// Tableau Ligne ///
+    var tabLigneDroite = []
+    var tabLigneGauche = []
+    var tabSchemaLigne = []
 
-        /// Tableau Diago droite ///   ex : \
-        var tabDiagoHautDroite = []
-        var tabDiagoBasDroite = []
-        var tabSchemaDiagoDroite = []
+    /// Tableau Colonne ///
+    var tabColonneHaut = []
+    var tabColonneBas = []
+    var tabSchemaColonne = []
 
-        /// Tableal Diago Gauche /// ex : /
-        var tabDiagoHautGauche = []
-        var tabDiagoBasGauche = []
-        var taSchemaDiagoGauche = []
-        //ligne
-        for(var i = 1 ; i < 6; i++){
-            if(isPositionInBound(x+i,y)){
-                tabLigneDroite.push(board[x + i][y])
-            }
-        }
-        for(var z = 1 ; z < 6 ; z++){
-            if(isPositionInBound(x-z,y)){
-                tabLigneGauche.push(board[x - z][y])
-            }
-        }
+    /// Tableau Diago droite ///   ex : \
+    var tabDiagoHautDroite = []
+    var tabDiagoBasDroite = []
+    var tabSchemaDiagoDroite = []
 
-        for(var e = tabLigneGauche.length -1; e != -1; e--){
-            tabSchemaLigne.push(tabLigneGauche[e])
-        }
-        tabSchemaLigne.push(1)
-        for(var r = 0; r < tabLigneDroite.length; r++){
-            tabSchemaLigne.push(tabLigneDroite[r])
-        }
-
-        //// Colonne ////
-
-        for(var i = 1 ; i < 6; i++){
-            if(isPositionInBound(x,y+i) ){
-                tabColonneHaut.push(board[x][y + i])
-            }
-        }
-        for(var z = 1 ; z < 6 ; z++){
-            if(isPositionInBound(x,y-z)){
-                tabColonneBas.push(board[x][y - z])
-            }
-        }
-
-        for(var e = tabColonneHaut.length -1; e != -1; e--){
-            tabSchemaColonne.push(tabColonneHaut[e])
-        }
-        tabSchemaColonne.push(1)
-        for(var r = 0; r < tabColonneBas.length; r++){
-            tabSchemaColonne.push(tabColonneBas[r])
-        }
-
-        //// Diagonal Droite ////
-        for(var i = 1 ; i < 6; i++){
-            if(isPositionInBound(x+i,y+i)){
-                tabDiagoHautDroite.push(board[x + i][y + i])
-            }
-        }
-        for(var z = 1 ; z < 6 ; z++){
-
-            if(isPositionInBound(x-z,y-z)){
-                tabDiagoBasDroite.push(board[x - z][y - z])
-            }
-        }
-
-        for(var e = tabDiagoBasDroite.length -1; e != -1; e--){
-            tabSchemaDiagoDroite.push(tabDiagoBasDroite[e])
-        }
-        tabSchemaDiagoDroite.push(1)
-        for(var r = 0; r < tabDiagoHautDroite.length; r++){
-            tabSchemaDiagoDroite.push(tabDiagoHautDroite[r])
-        }
-
-
-        //// Diagonal Gauche ////
-        for(var i = 1 ; i < 6; i++){
-            if(isPositionInBound(x-i,y+i)){
-                tabDiagoHautGauche.push(board[x - i][y + i])
-            }
-        }
-        for(var z = 1 ; z < 6 ; z++){
-            if(isPositionInBound(x+z,y-z)){
-                tabDiagoBasGauche.push(board[x + z][y - z])
-            }
-        }
-
-        for(var e = tabDiagoBasGauche.length -1; e != -1; e--){
-            taSchemaDiagoGauche.push(tabDiagoBasGauche[e])
-        }
-        taSchemaDiagoGauche.push(1)
-        for(var r = 0; r < tabDiagoHautGauche.length; r++){
-            taSchemaDiagoGauche.push(tabDiagoHautGauche[r])
-        }
-
-        var fiveAlignement=0;
-        //check 5 ligne
-        for(var e=0;e<tabSchemaLigne.length;e++){
-            if(fiveAlignement!=5){
-                if(tabSchemaLigne[e] == board[x][y]){
-                    fiveAlignement++;
-                }else{
-                    fiveAlignement=0;
-                }
-            }
-        }
-        //check 5 colonne
-        if(fiveAlignement!=5){
-            for(var e=0;e<tabSchemaColonne.length;e++){
-                if(fiveAlignement!=5){
-                    if(tabSchemaColonne[e] == board[x][y]){
-                        fiveAlignement++;
-                    }else{
-                        fiveAlignement=0;
-                    }
-                }
-            }
-        }
-        //check 5 diagoDroite
-        if(fiveAlignement!=5){
-            for(var e=0;e<tabSchemaDiagoDroite.length;e++){
-                if(fiveAlignement!=5){
-                    if(tabSchemaDiagoDroite[e] == board[x][y]){
-                        fiveAlignement++;
-                    }else{
-                        fiveAlignement=0;
-                    }
-                }
-            }
-        }
-        //check 5 diagoGauche
-        if(fiveAlignement!=5){
-            for(var e=0;e<taSchemaDiagoGauche.length;e++){
-                if(fiveAlignement!=5){
-                    if(taSchemaDiagoGauche[e] == board[x][y]){
-                        fiveAlignement++;
-                    }else{
-                        fiveAlignement=0;
-                    }
-                }
-            }
-        }
-        if(fiveAlignement==5){
-            //appel fonction victoire
-            var currentIdJoueur = joueur1.idJoueur
-            var currentJoueurName = joueur1.nomJoueur
-            if (joueur2.status == 1) {
-                currentIdJoueur = joueur2.idJoueur
-                currentJoueurName = joueur2.nomJoueur
-            }
-            partie.endOfGame=true;
-            partie.detailFinPartie="Victoire par 5 : "+currentJoueurName +"avec id : " + currentIdJoueur;
-            console.log(partie.detailFinPartie);
-
-            console.log('WIN');
-        }
+    /// Tableal Diago Gauche /// ex : /
+    var tabDiagoHautGauche = []
+    var tabDiagoBasGauche = []
+    var taSchemaDiagoGauche = []
+      //ligne
+    for (var i = 1; i < 6; i++) {
+      if (isPositionInBound(x + i, y)) {
+        tabLigneDroite.push(board[x + i][y])
+      }
     }
+    for (var z = 1; z < 6; z++) {
+      if (isPositionInBound(x - z, y)) {
+        tabLigneGauche.push(board[x - z][y])
+      }
+    }
+
+    for (var e = tabLigneGauche.length - 1; e != -1; e--) {
+      tabSchemaLigne.push(tabLigneGauche[e])
+    }
+    tabSchemaLigne.push(1)
+    for (var r = 0; r < tabLigneDroite.length; r++) {
+      tabSchemaLigne.push(tabLigneDroite[r])
+    }
+
+    //// Colonne ////
+
+    for (var i = 1; i < 6; i++) {
+      if (isPositionInBound(x, y + i)) {
+        tabColonneHaut.push(board[x][y + i])
+      }
+    }
+    for (var z = 1; z < 6; z++) {
+      if (isPositionInBound(x, y - z)) {
+        tabColonneBas.push(board[x][y - z])
+      }
+    }
+
+    for (var e = tabColonneHaut.length - 1; e != -1; e--) {
+      tabSchemaColonne.push(tabColonneHaut[e])
+    }
+    tabSchemaColonne.push(1)
+    for (var r = 0; r < tabColonneBas.length; r++) {
+      tabSchemaColonne.push(tabColonneBas[r])
+    }
+
+    //// Diagonal Droite ////
+    for (var i = 1; i < 6; i++) {
+      if (isPositionInBound(x + i, y + i)) {
+        tabDiagoHautDroite.push(board[x + i][y + i])
+      }
+    }
+    for (var z = 1; z < 6; z++) {
+
+      if (isPositionInBound(x - z, y - z)) {
+        tabDiagoBasDroite.push(board[x - z][y - z])
+      }
+    }
+
+    for (var e = tabDiagoBasDroite.length - 1; e != -1; e--) {
+      tabSchemaDiagoDroite.push(tabDiagoBasDroite[e])
+    }
+    tabSchemaDiagoDroite.push(1)
+    for (var r = 0; r < tabDiagoHautDroite.length; r++) {
+      tabSchemaDiagoDroite.push(tabDiagoHautDroite[r])
+    }
+
+
+    //// Diagonal Gauche ////
+    for (var i = 1; i < 6; i++) {
+      if (isPositionInBound(x - i, y + i)) {
+        tabDiagoHautGauche.push(board[x - i][y + i])
+      }
+    }
+    for (var z = 1; z < 6; z++) {
+      if (isPositionInBound(x + z, y - z)) {
+        tabDiagoBasGauche.push(board[x + z][y - z])
+      }
+    }
+
+    for (var e = tabDiagoBasGauche.length - 1; e != -1; e--) {
+      taSchemaDiagoGauche.push(tabDiagoBasGauche[e])
+    }
+    taSchemaDiagoGauche.push(1)
+    for (var r = 0; r < tabDiagoHautGauche.length; r++) {
+      taSchemaDiagoGauche.push(tabDiagoHautGauche[r])
+    }
+
+    var fiveAlignement = 0;
+    //check 5 ligne
+    for (var e = 0; e < tabSchemaLigne.length; e++) {
+      if (fiveAlignement != 5) {
+        if (tabSchemaLigne[e] == board[x][y]) {
+          fiveAlignement++;
+        } else {
+          fiveAlignement = 0;
+        }
+      }
+    }
+    //check 5 colonne
+    if (fiveAlignement != 5) {
+      for (var e = 0; e < tabSchemaColonne.length; e++) {
+        if (fiveAlignement != 5) {
+          if (tabSchemaColonne[e] == board[x][y]) {
+            fiveAlignement++;
+          } else {
+            fiveAlignement = 0;
+          }
+        }
+      }
+    }
+    //check 5 diagoDroite
+    if (fiveAlignement != 5) {
+      for (var e = 0; e < tabSchemaDiagoDroite.length; e++) {
+        if (fiveAlignement != 5) {
+          if (tabSchemaDiagoDroite[e] == board[x][y]) {
+            fiveAlignement++;
+          } else {
+            fiveAlignement = 0;
+          }
+        }
+      }
+    }
+    //check 5 diagoGauche
+    if (fiveAlignement != 5) {
+      for (var e = 0; e < taSchemaDiagoGauche.length; e++) {
+        if (fiveAlignement != 5) {
+          if (taSchemaDiagoGauche[e] == board[x][y]) {
+            fiveAlignement++;
+          } else {
+            fiveAlignement = 0;
+          }
+        }
+      }
+    }
+    if (fiveAlignement == 5) {
+      //appel fonction victoire
+      var currentIdJoueur = joueur1.idJoueur
+      var currentJoueurName = joueur1.nomJoueur
+      if (joueur2.status == 1) {
+        currentIdJoueur = joueur2.idJoueur
+        currentJoueurName = joueur2.nomJoueur
+      }
+      partie.endOfGame = true;
+      partie.detailFinPartie = "Victoire par 5 : " + currentJoueurName + "avec id : " + currentIdJoueur;
+      console.log(partie.detailFinPartie);
+
+      console.log('WIN');
+    }
+  }
 
 
 }

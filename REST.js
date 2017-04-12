@@ -159,7 +159,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
           joueur1.status = 0
           joueur2.status = 1
             //Log de la partie
-          console.log("Joueur1 place pion en [" + req.params.x + "," + req.params.y + "]")
+          console.log("   Joueur1 place pion en [" + req.params.x + "," + req.params.y + "]")
           console.log("En attente du joueur 2...")
         }
         //Le joueur 2 place un pion
@@ -177,7 +177,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
           joueur1.status = 1
           joueur2.status = 0
             //Log de la partie
-          console.log("Joueur2 place pion en [" + req.params.x + "," + req.params.y + "]")
+          console.log("   Joueur2 place pion en [" + req.params.x + "," + req.params.y + "]")
           console.log("En attente du joueur 1...")
         }
         res.status(200).send({
@@ -311,7 +311,6 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
     //Position possible
     if (isPositionInBound(y + 3, x + 3)) {
       //Présence d'une tenaille suite au coup joué
-      console.log(board[y + 3][x + 3])
       if (board[y + 3][x + 3] == value) {
         //Si les positions existent on vérifie la valeur des cases
         if (board[y + 1][x + 1] == inverse && board[y + 2][x + 2] == inverse) {
@@ -392,28 +391,29 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
   function timedCount() {
     timerManche = timerManche + 1;
     timerGame = timerGame + 1;
-    //Logging timer
-    if (joueur1.status != null || joueur2.status != null) {
-      console.log(timerManche);
-    }
+
     checkC();
     checkGameTime();
     t = setTimeout(function() {
       timedCount()
-    }, 100);
+    }, 1000);
   }
   //Verification du temps du round
   function checkC() {
-    if (timerManche > 60) {
-      partie.endOfGame = true;
-      partie.detailFinPartie = "Temps dépassé";
-
-      var messageFin = "Temps dépasse, le joueur : " + joueur1.nomJoueur + " gagne !"
+    if (timerManche > 12) {
+      if(!partie.endOfGame)
+      {
+      var messageFin = "Temps écoulé, le joueur : " + "[" + joueur1.nomJoueur +"," +joueur1.idJoueur + "] perd" + " et [" +joueur2.nomJoueur + ","+ joueur2.idJoueur+"] gagne"
       if (joueur2.status == 1) {
-        messageFin = "Temps dépasse, le joueur2 : " + joueur2.nomJoueur + " gagne !"
+         messageFin = "Temps écoulé, le joueur2 : " + "[" +joueur2.nomJoueur + ","+ joueur2.idJoueur + "] perd" + " et [" +joueur1.nomJoueur + ","+ joueur1.idJoueur+"] gagne"
       }
       console.log(messageFin);
+
+      //Fin de la partie on update les informations
+      partie.endOfGame = true;
+      partie.detailFinPartie = messageFin;
       stopCount();
+    }
     }
   }
   //Verification du temps de la partie et déclenchement de la mort subite
@@ -461,7 +461,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
     var tabDiagoBasDroite = []
     var tabSchemaDiagoDroite = []
 
-    /// Tableal Diago Gauche /// ex : /
+    /// Tableau Diago Gauche /// ex : /
     var tabDiagoHautGauche = []
     var tabDiagoBasGauche = []
     var taSchemaDiagoGauche = []
@@ -604,10 +604,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         currentJoueurName = joueur2.nomJoueur
       }
       partie.endOfGame = true;
-      partie.detailFinPartie = "Victoire par 5 : " + currentJoueurName + "avec id : " + currentIdJoueur;
+      partie.detailFinPartie = "Victoire par 5 : " + currentJoueurName + " avec id : " + currentIdJoueur;
       console.log(partie.detailFinPartie);
-
-      console.log('WIN');
     }
   }
 

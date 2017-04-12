@@ -81,7 +81,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
     res.json({
       //On renvoi nom des joueurs actuellement connecte a la partie
         nomJoueur1: joueur1.nomJoueur,
-        nomJoueur2: joueur2.nomJoueur
+        idJoueur1:joueur1.idJoueur,
+        nomJoueur2: joueur2.nomJoueur,
+        idJoueur2:joueur2.idJoueur
       });
   });
 

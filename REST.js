@@ -144,7 +144,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         if (req.params.idJoueur == joueur1.idJoueur) {
                 if(checkPostionLapTwo(req.params.x,req.params.x,partie.lap)){
                     partie.endOfGame = true;
-                    partie.detailFinPartie = "Placement éronné lors du tour "+partie.lap+1+ " de " + joueur1.nomJoueur + " Victoire du joueur "+joueur2.nomJoueur+" avec id : " + joueur2.idJoueur;
+                    partie.detailFinPartie = "Placement éronné lors du tour "+parseInt(partie.lap)+1+ " de " + joueur1.nomJoueur + " Victoire du joueur "+joueur2.nomJoueur+" avec id : " + joueur2.idJoueur;
                     console.log(partie.detailFinPartie);
                 }
               board[req.params.y][req.params.x] = 1;
@@ -405,7 +405,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
   }
   //Verification du temps du round
   function checkC() {
-    if (timerManche > 12) {
+    if (timerManche > 120) {
       if(!partie.endOfGame)
       {
       var messageFin = "Temps écoulé, le joueur : " + "[" + joueur1.nomJoueur +"," +joueur1.idJoueur + "] perd" + " et [" +joueur2.nomJoueur + ","+ joueur2.idJoueur+"] gagne"

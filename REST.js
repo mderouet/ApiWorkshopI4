@@ -454,6 +454,16 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
   function checkTheFiveWin(x, y) {
     y = parseInt(y)
     x = parseInt(x)
+      var currentIdJoueur = joueur1.idJoueur
+      if (joueur2.status == 1) {
+          currentIdJoueur = joueur2.idJoueur
+      }
+      var joueurVariable;
+    if(currentIdJoueur==joueur1.idJoueur){
+        joueurVariable=1;
+    }else{
+        joueurVariable=2;
+    }
 
     /// Tableau Ligne ///
     var tabLigneDroite = []
@@ -489,7 +499,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
     for (var e = tabLigneGauche.length - 1; e != -1; e--) {
       tabSchemaLigne.push(tabLigneGauche[e])
     }
-    tabSchemaLigne.push(1)
+    tabSchemaLigne.push(joueurVariable)
     for (var r = 0; r < tabLigneDroite.length; r++) {
       tabSchemaLigne.push(tabLigneDroite[r])
     }
@@ -510,7 +520,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
     for (var e = tabColonneHaut.length - 1; e != -1; e--) {
       tabSchemaColonne.push(tabColonneHaut[e])
     }
-    tabSchemaColonne.push(1)
+    tabSchemaColonne.push(joueurVariable)
     for (var r = 0; r < tabColonneBas.length; r++) {
       tabSchemaColonne.push(tabColonneBas[r])
     }
@@ -531,7 +541,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
     for (var e = tabDiagoBasDroite.length - 1; e != -1; e--) {
       tabSchemaDiagoDroite.push(tabDiagoBasDroite[e])
     }
-    tabSchemaDiagoDroite.push(1)
+    tabSchemaDiagoDroite.push(joueurVariable)
     for (var r = 0; r < tabDiagoHautDroite.length; r++) {
       tabSchemaDiagoDroite.push(tabDiagoHautDroite[r])
     }
@@ -552,7 +562,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
     for (var e = tabDiagoBasGauche.length - 1; e != -1; e--) {
       taSchemaDiagoGauche.push(tabDiagoBasGauche[e])
     }
-    taSchemaDiagoGauche.push(1)
+    taSchemaDiagoGauche.push(joueurVariable)
     for (var r = 0; r < tabDiagoHautGauche.length; r++) {
       taSchemaDiagoGauche.push(tabDiagoHautGauche[r])
     }

@@ -77,6 +77,14 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
     });
   });
 
+  router.get("/joueurs/", function(req, res) {
+    res.json({
+      //On renvoi nom des joueurs actuellement connecte a la partie
+        nomJoueur1: joueur1.nomJoueur,
+        nomJoueur2: joueur2.nomJoueur
+      });
+  });
+
   router.get("/connect/:groupName", function(req, res) {
     if (joueur1.idJoueur == null) {
       joueur1.nomJoueur = req.params.groupName

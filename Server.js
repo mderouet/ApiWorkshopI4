@@ -29,8 +29,8 @@ REST.prototype.configureExpress = function() {
 }
 
 REST.prototype.startServer = function() {
-      app.listen(3000,function(){
-          console.log("Running on port 3000, i'm the daemon...(It's a joke...)");
+      app.listen(3333,function(){
+          console.log("Running on port 3333, i'm the daemon...(It's a joke...)");
       });
 }
 

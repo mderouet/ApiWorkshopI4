@@ -400,7 +400,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
     checkGameTime();
     t = setTimeout(function() {
       timedCount()
-    }, 1000);
+    }, 100);
   }
     //Verification du temps du round
   function checkC() {
@@ -528,13 +528,13 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
 
         //// Diagonal Gauche ////
         for(var i = 1 ; i < 6; i++){
-            if(isPositionInBound(x+i,y+i)){
-                tabDiagoHautGauche.push(board[x + i][y + i])
+            if(isPositionInBound(x-i,y+i)){
+                tabDiagoHautGauche.push(board[x - i][y + i])
             }
         }
         for(var z = 1 ; z < 6 ; z++){
-            if(isPositionInBound(x-z,y-z)){
-                tabDiagoBasGauche.push(board[x - z][y - z])
+            if(isPositionInBound(x+z,y-z)){
+                tabDiagoBasGauche.push(board[x + z][y - z])
             }
         }
 
@@ -602,7 +602,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
                 currentJoueurName = joueur2.nomJoueur
             }
             partie.endOfGame=true;
-            partie.detailFinPartie="Victoire par 5 : "+currentJoueurName +" avec id : " + currentIdJoueur;
+            partie.detailFinPartie="Victoire par 5 : "+currentJoueurName +"avec id : " + currentIdJoueur;
             console.log(partie.detailFinPartie);
 
             console.log('WIN');

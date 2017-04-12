@@ -161,14 +161,23 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
               }
               //Mise à jour du nombre de tenaille du joueur 1
               joueur1.tenaille += tenailleNumber(coordY, coordX)
+              if(joueur1.tenaille == 5)
+              {
+                partie.endOfGame = true;
+                partie.detailFinPartie = "Victoire par 5 tenailles obtenues: " + joueur1.nomJoueur + " avec id : " + joueur1.idJoueur;
+                console.log(partie.detailFinPartie);
+              }
                 //Verification de la victoire par 5 pions qui se suivent
               checkTheFiveWin(coordY, coordX)
                 //On change le statut du joueur
               joueur1.status = 0
               joueur2.status = 1
                 //Log de la partie
-              console.log("Joueur1 place pion en [" + coordX + "," + coordY + "]")
+              console.log("   Joueur1 place pion en [" + coordX + "," + coordY + "]")
+              if(!partie.endOfGame)
+              {
               console.log("En attente du joueur 2...")
+            }
         }
         //Le joueur 2 place un pion
         if (req.params.idJoueur == joueur2.idJoueur) {
@@ -179,6 +188,14 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
           restartCount();
           //Mise à jour du nombre de tenaille du joueur 2
           joueur2.tenaille += tenailleNumber(coordY, coordX)
+
+          if(joueur2.tenaille == 5)
+          {
+          partie.endOfGame = true;
+          partie.detailFinPartie = "Victoire par 5 tenailles obtenues: " + joueur1.nomJoueur + " avec id : " + joueur1.idJoueur;
+          console.log(partie.detailFinPartie);
+          }
+
             //Verification de la victoire par 5 pions qui se suivent
           checkTheFiveWin(coordY, coordX)
             //On change le statut du joueur
@@ -186,7 +203,10 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
           joueur2.status = 0
             //Log de la partie
           console.log("   Joueur2 place pion en [" + coordX + "," + coordY + "]")
+          if(!partie.endOfGame)
+          {
           console.log("En attente du joueur 1...")
+          }
         }
         res.status(200).send({
           code: 200
@@ -621,7 +641,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         currentJoueurName = joueur2.nomJoueur
       }
       partie.endOfGame = true;
-      partie.detailFinPartie = "Victoire par 5 : " + currentJoueurName + " avec id : " + currentIdJoueur;
+      partie.detailFinPartie = "Victoire par 5 pions dans le même alignement : " + currentJoueurName + " avec id : " + currentIdJoueur;
       console.log(partie.detailFinPartie);
     }
   }

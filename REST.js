@@ -23,13 +23,13 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
     joueur1 = {
       idJoueur: null,
       nomJoueur: null,
-      tenaille: null,
+      tenaille: 0,
       status: null
     }
     joueur2 = {
       idJoueur: null,
       nomJoueur: null,
-      tenaille: null,
+      tenaille: 0,
       status: null
     }
     partie = {
@@ -145,6 +145,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
                 if(checkPostionLapTwo(req.params.x,req.params.y,partie.lap)){
                     partie.endOfGame = true;
                     partie.detailFinPartie = "Placement éronné lors du tour "+ (parseInt(partie.lap)+1)+ " de " + joueur1.nomJoueur + " Victoire du joueur "+joueur2.nomJoueur+" avec id : " + joueur2.idJoueur;
+
                     console.log(partie.detailFinPartie);
                 }
               board[req.params.y][req.params.x] = 1;
@@ -246,7 +247,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
   function tenailleNumber(y, x) {
     y = parseInt(y)
     x = parseInt(x)
-    var nombreTenaille = 0
+    var nbrTenaille = 0
     var value = board[y][x]
     var inverse = 1
     if (value == 1) {
@@ -262,7 +263,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         if (board[y - 1][x - 1] == inverse && board[y - 2][x - 2] == inverse) {
           board[y - 1][x - 1] = 0
           board[y - 2][x - 2] = 0
-          nombreTenaille++
+          nbrTenaille++
         }
       }
     }
@@ -277,7 +278,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
           board[y - 1][x] = 0
           board[y - 2][x] = 0
 
-          nombreTenaille++
+          nbrTenaille++
         }
       }
     }
@@ -292,7 +293,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
           board[y - 1][x + 1] = 0
           board[y - 2][x + 2] = 0
 
-          nombreTenaille++
+          nbrTenaille++
         }
       }
     }
@@ -307,7 +308,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
           board[y][x + 1] = 0
           board[y][x + 2] = 0
 
-          nombreTenaille++
+          nbrTenaille++
         }
       }
     }
@@ -322,7 +323,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
           board[y + 1][x + 1] = 0
           board[y + 2][x + 2] = 0
 
-          nombreTenaille++
+          nbrTenaille++
         }
       }
     }
@@ -337,7 +338,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
           board[y + 1][x] = 0
           board[y + 2][x] = 0
 
-          nombreTenaille++
+          nbrTenaille++
         }
       }
     }
@@ -353,7 +354,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
           board[y + 1][x - 1] = 0
           board[y + 2][x - 2] = 0
 
-          nombreTenaille++
+          nbrTenaille++
         }
       }
     }
@@ -368,12 +369,13 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
           board[y][x - 1] = 0
           board[y][x - 2] = 0
 
-          nombreTenaille++
+          nbrTenaille++
         }
       }
     }
-
-    return nombreTenaille
+    console.log("Nombre tenaille j1 : " + joueur1.nombreTenaille)
+    console.log("Nombre tenaille j2 : " + joueur2.nombreTenaille)
+    return nbrTenaille
   }
 
   // Les valeurs [x,y] sont dans la board
@@ -405,7 +407,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
   }
   //Verification du temps du round
   function checkC() {
-    if (timerManche > 12) {
+    if (timerManche > 120) {
       if(!partie.endOfGame)
       {
       var messageFin = "Temps écoulé, le joueur : " + "[" + joueur1.nomJoueur +"," +joueur1.idJoueur + "] perd" + " et [" +joueur2.nomJoueur + ","+ joueur2.idJoueur+"] gagne"
@@ -616,6 +618,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
     function checkPostionLapTwo(x, y, lap) {
         y = parseInt(y)
         x = parseInt(x)
+
         if(lap==2){
             var lapTwoLimit=[]
             lapTwoLimit.push({x:9,y:9})
@@ -644,10 +647,12 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
             }
             return found
         }else if(lap==0){
+
             if(x==9 && y==9){
                 return false
             }else{
                 return true
+
             }
         }
         else{
@@ -655,5 +660,6 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         }
     }
   }
+
 
 module.exports = REST_ROUTER;

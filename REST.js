@@ -192,7 +192,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
           if(joueur2.tenaille == 5)
           {
           partie.endOfGame = true;
-          partie.detailFinPartie = "Victoire par 5 tenailles obtenues: " + joueur1.nomJoueur + " avec id : " + joueur1.idJoueur;
+          partie.detailFinPartie = "Victoire par 5 tenailles obtenues: " + joueur2.nomJoueur + " avec id : " + joueur2.idJoueur;
           console.log(partie.detailFinPartie);
           }
 

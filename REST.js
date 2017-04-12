@@ -472,7 +472,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
             }
         }
         for(var z = 1 ; z < 6 ; z++){
-            if(isPositionInBound(x-z,z)){
+            if(isPositionInBound(x-z,y)){
                 tabLigneGauche.push(board[x - z][y])
             }
         }
@@ -484,8 +484,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         for(var r = 0; r < tabLigneDroite.length; r++){
             tabSchemaLigne.push(tabLigneDroite[r])
         }
-        console.log("- : ")
-        console.log(tabSchemaLigne)
+        //console.log("- : ")
+        //console.log(tabSchemaLigne)
 
         //// Colonne ////
 
@@ -507,8 +507,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         for(var r = 0; r < tabColonneBas.length; r++){
             tabSchemaColonne.push(tabColonneBas[r])
         }
-        console.log("| : ")
-        console.log(tabSchemaColonne)
+        //console.log("| : ")
+        //console.log(tabSchemaColonne)
 
         //// Diagonal Droite ////
         for(var i = 1 ; i < 6; i++){
@@ -531,8 +531,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
             tabSchemaDiagoDroite.push(tabDiagoHautDroite[r])
         }
 
-        console.log( " \\ : ")
-        console.log(tabSchemaDiagoDroite)
+        //console.log( " \\ : ")
+        //console.log(tabSchemaDiagoDroite)
         //// Diagonal Gauche ////
         for(var i = 1 ; i < 6; i++){
             if(isPositionInBound(x+i,y+i)){
@@ -553,18 +553,16 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
             taSchemaDiagoGauche.push(tabDiagoHautGauche[r])
         }
 
-        console.log( " / : ")
-        console.log(taSchemaDiagoGauche)
-        console.log("--------------------------------------")
+        //console.log( " / : ")
+        //console.log(taSchemaDiagoGauche)
+        //console.log("--------------------------------------")
 
         var fiveAlignement=0;
         //check 5 ligne
         for(var e=0;e<tabSchemaLigne.length;e++){
             if(fiveAlignement!=5){
-                console.log(tabSchemaLigne[e]+" / "+board[x][y])
-                if(tabSchemaLigne[e] == board[x][y] ){
+                if(tabSchemaLigne[e] == board[x][y]){
                     fiveAlignement++;
-                    console.log('ligne');
                 }else{
                     fiveAlignement=0;
                 }
@@ -576,7 +574,6 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
                 if(fiveAlignement!=5){
                     if(tabSchemaColonne[e] == board[x][y]){
                         fiveAlignement++;
-                        console.log('col');
                     }else{
                         fiveAlignement=0;
                     }
@@ -589,7 +586,6 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
                 if(fiveAlignement!=5){
                     if(tabSchemaDiagoDroite[e] == board[x][y]){
                         fiveAlignement++;
-                        console.log('diago droite');
                     }else{
                         fiveAlignement=0;
                     }
@@ -602,7 +598,6 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
                 if(fiveAlignement!=5){
                     if(taSchemaDiagoGauche[e] == board[x][y]){
                         fiveAlignement++;
-                        console.log('diago gauche');
                     }else{
                         fiveAlignement=0;
                     }
@@ -619,7 +614,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
             partie.detailFinPartie="Victoire par 5 "+currentIdJoueur;
             console.log(partie.detailFinPartie);
             init();
+
             console.log('WIN');
+
         }
     }
 

@@ -85,7 +85,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
 
       //On renvoi le md5 correspondant a groupName comme identifiant à l'utilisateur
       res.status(200).send({
-        idjoueur: md5(req.params.groupName),
+        idJoueur: md5(req.params.groupName),
         code: 200,
         nomJoueur: req.params.groupName
       });
@@ -101,7 +101,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
       console.log("Debut de la partie : " + "En attente du joueur1 ")
         //On renvoi le md5 correspondant a groupName comme identifiant à l'utilisateur
       res.status(200).send({
-        idjoueur: md5(req.params.groupName),
+        idJoueur: md5(req.params.groupName),
         code: 200,
         nomJoueur: req.params.groupName
       });
@@ -406,7 +406,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
   function checkC() {
     if (timerManche > 60) {
       partie.endOfGame = true;
-      partie.detailFinPartie = "Temps dépassé"
+      partie.detailFinPartie = "Temps dépassé";
 
       var messageFin = "Temps dépasse, le joueur : " + joueur1.nomJoueur + " gagne !"
       if (joueur2.status == 1) {

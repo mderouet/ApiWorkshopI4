@@ -89,7 +89,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         code: 200,
         nomJoueur: req.params.groupName
       });
-    } else if (joueur2.idJoueur == null) {
+    } else if (joueur2.idJoueur == null && req.params.groupName != joueur1.nomJoueur) {
       joueur2.nomJoueur = req.params.groupName;
       joueur2.idJoueur = md5(req.params.groupName);
       console.log("Connection Joueur2  [idJoueur : " + joueur2.idJoueur + " nomJoueur : " + joueur2.nomJoueur + "]")
@@ -106,7 +106,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         nomJoueur: req.params.groupName
       });
     } else {
-      //Retourné quand la partie est déjà en cours et que l'utilisateur n'est pas autorisé à joueur.
+      //Retourné quand la partie est déjà en cours et que l'utilisateur n'est pas autorisé à joueur ou le joueur existe déja
       res.status(401).send({
         code: 401
       });
@@ -144,7 +144,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         if (req.params.idJoueur == joueur1.idJoueur) {
                 if(checkPostionLapTwo(req.params.x,req.params.x,partie.lap)){
                     partie.endOfGame = true;
-                    partie.detailFinPartie = "Placement dans le carré de Départ au second Tour de " + joueur1.nomJoueur + "Victoire du joueur "+joueur2.nomJoueur+" avec id : " + joueur2.idJoueur;
+                    partie.detailFinPartie = "Placement dans le carré de Départ au second Tour de " + joueur1.nomJoueur + " Victoire du joueur "+joueur2.nomJoueur+" avec id : " + joueur2.idJoueur;
                     console.log(partie.detailFinPartie);
                 }
               board[req.params.y][req.params.x] = 1;

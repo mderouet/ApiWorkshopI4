@@ -257,7 +257,6 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         if (board[y - 1][x - 1] == inverse && board[y - 2][x - 2] == inverse) {
           board[y - 1][x - 1] = 0
           board[y - 2][x - 2] = 0
-
           nombreTenaille++
         }
       }
@@ -300,8 +299,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
       if (board[y][x + 3] == value) {
         //Si les positions existent on vérifie la valeur des cases
         if (board[y][x + 1] == inverse && board[y][x + 2] == inverse) {
-          board[y][x - 1] = 0
-          board[y][x - 2] = 0
+          board[y][x + 1] = 0
+          board[y][x + 2] = 0
 
           nombreTenaille++
         }
@@ -355,15 +354,15 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
       }
     }
 
-    //Diagonale gauche
+    //Gauche
     //Position possible
     if (isPositionInBound(y, x - 3)) {
       //Présence d'une tenaille suite au coup joué
       if (board[y][x - 3] == value) {
         //Si les positions existent on vérifie la valeur des cases
         if (board[y][x - 1] == inverse && board[y][x - 2] == inverse) {
-          board[y][x + 1] = 0
-          board[y][x + 2] = 0
+          board[y][x - 1] = 0
+          board[y][x - 2] = 0
 
           nombreTenaille++
         }
@@ -483,8 +482,6 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         for(var r = 0; r < tabLigneDroite.length; r++){
             tabSchemaLigne.push(tabLigneDroite[r])
         }
-        //console.log("- : ")
-        //console.log(tabSchemaLigne)
 
         //// Colonne ////
 
@@ -506,8 +503,6 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         for(var r = 0; r < tabColonneBas.length; r++){
             tabSchemaColonne.push(tabColonneBas[r])
         }
-        //console.log("| : ")
-        //console.log(tabSchemaColonne)
 
         //// Diagonal Droite ////
         for(var i = 1 ; i < 6; i++){
@@ -530,8 +525,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
             tabSchemaDiagoDroite.push(tabDiagoHautDroite[r])
         }
 
-        //console.log( " \\ : ")
-        //console.log(tabSchemaDiagoDroite)
+
         //// Diagonal Gauche ////
         for(var i = 1 ; i < 6; i++){
             if(isPositionInBound(x+i,y+i)){
@@ -551,10 +545,6 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         for(var r = 0; r < tabDiagoHautGauche.length; r++){
             taSchemaDiagoGauche.push(tabDiagoHautGauche[r])
         }
-
-        //console.log( " / : ")
-        //console.log(taSchemaDiagoGauche)
-        //console.log("--------------------------------------")
 
         var fiveAlignement=0;
         //check 5 ligne
@@ -612,7 +602,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
                 currentJoueurName = joueur2.nomJoueur
             }
             partie.endOfGame=true;
-            partie.detailFinPartie="Victoire par 5 : "+currentJoueurName +"avec id : " + currentIdJoueur;
+            partie.detailFinPartie="Victoire par 5 : "+currentJoueurName +" avec id : " + currentIdJoueur;
             console.log(partie.detailFinPartie);
 
             console.log('WIN');

@@ -117,6 +117,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
 
 
   router.get("/play/:x/:y/:idJoueur", function(req, res) {
+    var coordX = req.params.y
+    var coordY = req.params.x
     var currentIdJoueur = joueur1.idJoueur
     if (joueur2.status == 1) {
       currentIdJoueur = joueur2.idJoueur
@@ -134,56 +136,56 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         isPositionDisponible: null,
         isEnd: null
       };
-      erreur.isOnBoard = isPositionInBound(req.params.x, req.params.y);
-      erreur.isPositionDisponible = isPositionAvailable(req.params.y, req.params.x);
+      erreur.isOnBoard = isPositionInBound(coordX, coordY);
+      erreur.isPositionDisponible = isPositionAvailable(coordY, coordX);
       erreur.isEnd = partie.endOfGame;
 
       // Vérification si la pos est dans la board, egal a 0 et si un des joueurs a un statut qui permet de jouer et que ce n'est pas la fin de la partie
-      if (isPositionInBound(req.params.x, req.params.x) && isPositionAvailable(req.params.y, req.params.x) && partie.endOfGame == false && ((joueur1.status == 1) || (joueur2.status == 1))) {
+      if (isPositionInBound(coordX, coordX) && isPositionAvailable(coordY, coordX) && partie.endOfGame == false && ((joueur1.status == 1) || (joueur2.status == 1))) {
         //Le joueur 1 place un pion
         if (req.params.idJoueur == joueur1.idJoueur) {
-                if(checkPostionLapTwo(req.params.x,req.params.y,partie.lap)){
+                if(checkPostionLapTwo(coordX,coordY,partie.lap)){
                     partie.endOfGame = true;
                     partie.detailFinPartie = "Placement éronné lors du tour "+ (parseInt(partie.lap)+1)+ " de " + joueur1.nomJoueur + " Victoire du joueur "+joueur2.nomJoueur+" avec id : " + joueur2.idJoueur;
 
                     console.log(partie.detailFinPartie);
                 }
-              board[req.params.y][req.params.x] = 1;
+              board[coordY][coordX] = 1;
               partie.lap = partie.lap + 1;
-              partie.lastCoup.x = req.params.x;
-              partie.lastCoup.y = req.params.y;
+              partie.lastCoup.x = coordX;
+              partie.lastCoup.y = coordY;
               if (partie.lap == 1) {
                 startCount();
               } else {
                 restartCount()
               }
               //Mise à jour du nombre de tenaille du joueur 1
-              joueur1.nombreTenaille += tenailleNumber(req.params.y, req.params.x)
+              joueur1.nombreTenaille += tenailleNumber(coordY, coordX)
                 //Verification de la victoire par 5 pions qui se suivent
-              checkTheFiveWin(req.params.y, req.params.x)
+              checkTheFiveWin(coordY, coordX)
                 //On change le statut du joueur
               joueur1.status = 0
               joueur2.status = 1
                 //Log de la partie
-              console.log("Joueur1 place pion en [" + req.params.x + "," + req.params.y + "]")
+              console.log("Joueur1 place pion en [" + coordX + "," + coordY + "]")
               console.log("En attente du joueur 2...")
         }
         //Le joueur 2 place un pion
         if (req.params.idJoueur == joueur2.idJoueur) {
-          board[req.params.y][req.params.x] = 2;
+          board[coordY][coordX] = 2;
           partie.lap = partie.lap + 1;
-          partie.lastCoup.x = req.params.x;
-          partie.lastCoup.y = req.params.y;
+          partie.lastCoup.x = coordX;
+          partie.lastCoup.y = coordY;
           restartCount();
           //Mise à jour du nombre de tenaille du joueur 2
-          joueur2.nombreTenaille += tenailleNumber(req.params.y, req.params.x)
+          joueur2.nombreTenaille += tenailleNumber(coordY, coordX)
             //Verification de la victoire par 5 pions qui se suivent
-          checkTheFiveWin(req.params.y, req.params.x)
+          checkTheFiveWin(coordY, coordX)
             //On change le statut du joueur
           joueur1.status = 1
           joueur2.status = 0
             //Log de la partie
-          console.log("   Joueur2 place pion en [" + req.params.x + "," + req.params.y + "]")
+          console.log("   Joueur2 place pion en [" + coordX + "," + coordY + "]")
           console.log("En attente du joueur 1...")
         }
         res.status(200).send({
@@ -193,7 +195,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
       //Les coordonnées ne sont pas acceptables
       else {
         // Tentative de placement de point raté
-        console.log("Demande de placement de :" + currentIdJoueur + "en" + "[" + req.params.x + "," + req.params.y + "]");
+        console.log("Demande de placement de :" + currentIdJoueur + "en" + "[" + coordX + "," + coordY + "]");
         console.log(erreur);
         //Retourné quand le coup n'est pas valide
         res.status(406).send({
@@ -647,12 +649,10 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
             }
             return found
         }else if(lap==0){
-
             if(x==9 && y==9){
                 return false
             }else{
                 return true
-
             }
         }
         else{

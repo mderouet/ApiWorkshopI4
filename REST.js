@@ -414,8 +414,6 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
       }
       console.log(messageFin);
       stopCount();
-      //Remise à zéro de la partie
-      init();
     }
   }
     //Verification du temps de la partie et déclenchement de la mort subite

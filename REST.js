@@ -142,9 +142,9 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
       if (isPositionInBound(req.params.x, req.params.x) && isPositionAvailable(req.params.y, req.params.x) && partie.endOfGame == false && ((joueur1.status == 1) || (joueur2.status == 1))) {
         //Le joueur 1 place un pion
         if (req.params.idJoueur == joueur1.idJoueur) {
-                if(checkPostionLapTwo(req.params.x,req.params.x,partie.lap)){
+                if(checkPostionLapTwo(req.params.x,req.params.y,partie.lap)){
                     partie.endOfGame = true;
-                    partie.detailFinPartie = "Placement éronné lors du tour "+partie.lap+1+ " de " + joueur1.nomJoueur + " Victoire du joueur "+joueur2.nomJoueur+" avec id : " + joueur2.idJoueur;
+                    partie.detailFinPartie = "Placement éronné lors du tour "+ (parseInt(partie.lap)+1)+ " de " + joueur1.nomJoueur + " Victoire du joueur "+joueur2.nomJoueur+" avec id : " + joueur2.idJoueur;
                     console.log(partie.detailFinPartie);
                 }
               board[req.params.y][req.params.x] = 1;
@@ -614,6 +614,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
     }
   }
     function checkPostionLapTwo(x, y, lap) {
+        y = parseInt(y)
+        x = parseInt(x)
         if(lap==2){
             var lapTwoLimit=[]
             lapTwoLimit.push({x:9,y:9})
@@ -642,12 +644,13 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
             }
             return found
         }else if(lap==0){
-            var bad=false;
-            if(x!=9 && y!=9){
-               bad=true
+            if(x==9 && y==9){
+                return false
+            }else{
+                return true
             }
-            return bad
-        }else{
+        }
+        else{
             return false;
         }
     }

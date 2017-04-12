@@ -362,8 +362,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
       if (board[y][x - 3] == value) {
         //Si les positions existent on vérifie la valeur des cases
         if (board[y][x - 1] == inverse && board[y][x - 2] == inverse) {
-          board[y][x - 1] = 0
-          board[y][x - 2] = 0
+          board[y][x + 1] = 0
+          board[y][x + 2] = 0
 
           nombreTenaille++
         }
@@ -372,6 +372,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
 
     return nombreTenaille
   }
+
   // Les valeurs [x,y] sont dans la board
   function isPositionInBound(coordY, coordX) {
     return ((coordX >= 0 && coordX <= 18) && (coordY >= 0 && coordY <= 18))

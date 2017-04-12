@@ -611,10 +611,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
             partie.endOfGame=true;
             partie.detailFinPartie="Victoire par 5 "+currentIdJoueur;
             console.log(partie.detailFinPartie);
-            init();
 
             console.log('WIN');
-
         }
     }
 

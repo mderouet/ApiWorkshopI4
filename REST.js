@@ -139,28 +139,33 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
       erreur.isEnd = partie.endOfGame;
 
       // Vérification si la pos est dans la board, egal a 0 et si un des joueurs a un statut qui permet de jouer et que ce n'est pas la fin de la partie
-      if (isPositionInBound(req.params.x, req.params.y) && isPositionAvailable(req.params.y, req.params.x) && partie.endOfGame == false && ((joueur1.status == 1) || (joueur2.status == 1))) {
+      if (isPositionInBound(req.params.x, req.params.x) && isPositionAvailable(req.params.y, req.params.x) && partie.endOfGame == false && ((joueur1.status == 1) || (joueur2.status == 1))) {
         //Le joueur 1 place un pion
         if (req.params.idJoueur == joueur1.idJoueur) {
-          board[req.params.y][req.params.x] = 1;
-          partie.lap = partie.lap + 1;
-          partie.lastCoup.x = req.params.x;
-          partie.lastCoup.y = req.params.y;
-          if (partie.lap == 1) {
-            startCount();
-          } else {
-            restartCount()
-          }
-          //Mise à jour du nombre de tenaille du joueur 1
-          joueur1.nombreTenaille += tenailleNumber(req.params.y, req.params.x)
-            //Verification de la victoire par 5 pions qui se suivent
-          checkTheFiveWin(req.params.y, req.params.x)
-            //On change le statut du joueur
-          joueur1.status = 0
-          joueur2.status = 1
-            //Log de la partie
-          console.log("   Joueur1 place pion en [" + req.params.x + "," + req.params.y + "]")
-          console.log("En attente du joueur 2...")
+                if(checkPostionLapTwo(req.params.x,req.params.x,partie.lap)){
+                    partie.endOfGame = true;
+                    partie.detailFinPartie = "Placement dans le carré de Départ au second Tour de " + joueur1.nomJoueur + "Victoire du joueur "+joueur2.nomJoueur+" avec id : " + joueur2.idJoueur;
+                    console.log(partie.detailFinPartie);
+                }
+              board[req.params.y][req.params.x] = 1;
+              partie.lap = partie.lap + 1;
+              partie.lastCoup.x = req.params.x;
+              partie.lastCoup.y = req.params.y;
+              if (partie.lap == 1) {
+                startCount();
+              } else {
+                restartCount()
+              }
+              //Mise à jour du nombre de tenaille du joueur 1
+              joueur1.nombreTenaille += tenailleNumber(req.params.y, req.params.x)
+                //Verification de la victoire par 5 pions qui se suivent
+              checkTheFiveWin(req.params.y, req.params.x)
+                //On change le statut du joueur
+              joueur1.status = 0
+              joueur2.status = 1
+                //Log de la partie
+              console.log("Joueur1 place pion en [" + req.params.x + "," + req.params.y + "]")
+              console.log("En attente du joueur 2...")
         }
         //Le joueur 2 place un pion
         if (req.params.idJoueur == joueur2.idJoueur) {
@@ -608,8 +613,38 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
       console.log(partie.detailFinPartie);
     }
   }
+    function checkPostionLapTwo(x, y, lap) {
+        if(lap==2){
+            var lapTwoLimit=[]
+            lapTwoLimit.push({x:9,y:9})
+            lapTwoLimit.push({x:9,y:10})
+            lapTwoLimit.push({x:9,y:11})
+            lapTwoLimit.push({x:10,y:10})
+            lapTwoLimit.push({x:11,y:11})
+            lapTwoLimit.push({x:10,y:9})
+            lapTwoLimit.push({x:11,y:9})
+            lapTwoLimit.push({x:10,y:8})
+            lapTwoLimit.push({x:11,y:7})
+            lapTwoLimit.push({x:9,y:8})
+            lapTwoLimit.push({x:9,y:7})
+            lapTwoLimit.push({x:8,y:8})
+            lapTwoLimit.push({x:7,y:7})
+            lapTwoLimit.push({x:8,y:9})
+            lapTwoLimit.push({x:7,y:9})
+            lapTwoLimit.push({x:8,y:10})
+            lapTwoLimit.push({x:7,y:11})
 
-
-}
+            var found = false;
+            for(var i = 0; i < lapTwoLimit.length; i++) {
+                if (lapTwoLimit[i].x == x && lapTwoLimit[i].y==y) {
+                    found = true;
+                }
+            }
+            return found
+        }else{
+            return false;
+        }
+    }
+  }
 
 module.exports = REST_ROUTER;

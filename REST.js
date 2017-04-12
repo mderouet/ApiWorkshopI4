@@ -605,11 +605,13 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         if(fiveAlignement==5){
             //appel fonction victoire
             var currentIdJoueur = joueur1.idJoueur
+            var currentJoueurName = joueur1.nomJoueur
             if (joueur2.status == 1) {
                 currentIdJoueur = joueur2.idJoueur
+                currentJoueurName = joueur2.nomJoueur
             }
             partie.endOfGame=true;
-            partie.detailFinPartie="Victoire par 5 "+currentIdJoueur;
+            partie.detailFinPartie="Victoire par 5 : "+currentJoueurName +"avec id : "currentIdJoueur;
             console.log(partie.detailFinPartie);
 
             console.log('WIN');

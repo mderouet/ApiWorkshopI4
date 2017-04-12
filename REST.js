@@ -160,7 +160,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
                 restartCount()
               }
               //Mise à jour du nombre de tenaille du joueur 1
-              joueur1.nombreTenaille += tenailleNumber(coordY, coordX)
+              joueur1.tenaille += tenailleNumber(coordY, coordX)
                 //Verification de la victoire par 5 pions qui se suivent
               checkTheFiveWin(coordY, coordX)
                 //On change le statut du joueur
@@ -178,7 +178,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
           partie.lastCoup.y = coordY;
           restartCount();
           //Mise à jour du nombre de tenaille du joueur 2
-          joueur2.nombreTenaille += tenailleNumber(coordY, coordX)
+          joueur2.tenaille += tenailleNumber(coordY, coordX)
             //Verification de la victoire par 5 pions qui se suivent
           checkTheFiveWin(coordY, coordX)
             //On change le statut du joueur
@@ -375,8 +375,6 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         }
       }
     }
-    console.log("Nombre tenaille j1 : " + joueur1.nombreTenaille)
-    console.log("Nombre tenaille j2 : " + joueur2.nombreTenaille)
     return nbrTenaille
   }
 

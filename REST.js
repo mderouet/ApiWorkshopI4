@@ -97,7 +97,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
       res.status(200).send({
         idJoueur: md5(req.params.groupName),
         code: 200,
-        nomJoueur: req.params.groupName
+        nomJoueur: req.params.groupName,
+        numJoueur:1
       });
     } else if (joueur2.idJoueur == null && req.params.groupName != joueur1.nomJoueur) {
       joueur2.nomJoueur = req.params.groupName;
@@ -113,7 +114,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
       res.status(200).send({
         idJoueur: md5(req.params.groupName),
         code: 200,
-        nomJoueur: req.params.groupName
+        nomJoueur: req.params.groupName,
+        numJoueur:2
       });
     } else {
       //Retourné quand la partie est déjà en cours et que l'utilisateur n'est pas autorisé à joueur ou le joueur existe déja
@@ -130,8 +132,10 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
     var coordX = req.params.y
     var coordY = req.params.x
     var currentIdJoueur = joueur1.idJoueur
+    var currentNomJoueur = joueur1.nomJoueur
     if (joueur2.status == 1) {
       currentIdJoueur = joueur2.idJoueur
+      currentNomJoueur = joueur2.nomJoueur
     }
     //Id du joueur ne correspond ni au md5 du joueur1, ni du joueur 2
     if (((req.params.idJoueur != joueur1.idJoueur) && (req.params.idJoueur != joueur2.idJoueur)) || req.params.idJoueur != currentIdJoueur) {
@@ -227,6 +231,12 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         // Tentative de placement de point raté
         console.log("Demande de placement de :" + currentIdJoueur + "en" + "[" + coordX + "," + coordY + "]");
         console.log(erreur);
+
+        //Fin de la partie on update les informations
+        partie.endOfGame = true;
+        partie.detailFinPartie = "Tentative de placement de point raté en " + "[" + coordX + "," + coordY + "]" + ", le joueur : " + "[" + currentNomJoueur +"," + currentIdJoueur + "] perd la partie";
+
+
         //Retourné quand le coup n'est pas valide
         res.status(406).send({
           code: 406
@@ -253,8 +263,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
       });
 
     } else if (req.params.idJoueur == joueur2.idJoueur) {
-
       res.status(200).send({
+
         status: joueur2.status,
         tableau: board,
         nbTenaillesJ1: joueur1.tenaille,

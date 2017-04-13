@@ -134,7 +134,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
     //Coords
     var coordX = req.params.x
     var coordY = req.params.y
-    
+
     var currentIdJoueur = joueur1.idJoueur
     var currentNomJoueur = joueur1.nomJoueur
     if (joueur2.status == 1) {
@@ -191,7 +191,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
               joueur1.status = 0
               joueur2.status = 1
                 //Log de la partie
-              console.log("   Joueur1 place pion en [" + coordX + "," + coordY + "]")
+              console.log("   Joueur1 place pion en [" + coordY + "," + coordX + "]")
               if(!partie.endOfGame)
               {
               console.log("En attente du joueur 2...")
@@ -220,7 +220,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
           joueur1.status = 1
           joueur2.status = 0
             //Log de la partie
-          console.log("   Joueur2 place pion en [" + coordX + "," + coordY + "]")
+          console.log("   Joueur2 place pion en [" + coordY + "," + coordX + "]")
           if(!partie.endOfGame)
           {
           console.log("En attente du joueur 1...")
@@ -233,12 +233,12 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
       //Les coordonnées ne sont pas acceptables
       else {
         // Tentative de placement de point raté
-        console.log("Demande de placement de :" + currentIdJoueur + "en" + "[" + coordX + "," + coordY + "]");
+        console.log("Demande de placement de :" + currentIdJoueur + "en" + "[" + coordY + "," + coordX + "]");
         console.log(erreur);
 
         //Fin de la partie on update les informations
         partie.endOfGame = true;
-        partie.detailFinPartie = "Tentative de placement de point raté en " + "[" + coordX + "," + coordY + "]" + ", le joueur : " + "[" + currentNomJoueur +"," + currentIdJoueur + "] perd la partie";
+        partie.detailFinPartie = "Tentative de placement de point raté en " + "[" + coordY + "," + coordX + "]" + ", le joueur : " + "[" + currentNomJoueur +"," + currentIdJoueur + "] perd la partie";
 
 
         //Retourné quand le coup n'est pas valide

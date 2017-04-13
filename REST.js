@@ -132,8 +132,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
 
   router.get("/play/:x/:y/:idJoueur", function(req, res) {
     //Coords
-    var coordX = req.params.x
-    var coordY = req.params.y
+    var coordX = req.params.y
+    var coordY = req.params.x
 
     var currentIdJoueur = joueur1.idJoueur
     var currentNomJoueur = joueur1.nomJoueur
@@ -191,7 +191,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
               joueur1.status = 0
               joueur2.status = 1
                 //Log de la partie
-              console.log("   Joueur1 place pion en [" + coordY + "," + coordX + "]")
+              console.log("   Joueur1 place pion en [" + coordX + "," + coordY + "]")
               if(!partie.endOfGame)
               {
               console.log("En attente du joueur 2...")

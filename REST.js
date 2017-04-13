@@ -170,8 +170,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
                 }
               board[coordY][coordX] = 1;
               partie.lap = partie.lap + 1;
-              partie.lastCoup.x = coordX;
-              partie.lastCoup.y = coordY;
+              partie.lastCoup.x = coordY;
+              partie.lastCoup.y = coordX;
               if (partie.lap == 1) {
                 startCount();
               } else {
@@ -201,8 +201,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         if (req.params.idJoueur == joueur2.idJoueur) {
           board[coordY][coordX] = 2;
           partie.lap = partie.lap + 1;
-          partie.lastCoup.x = coordX;
-          partie.lastCoup.y = coordY;
+          partie.lastCoup.x = coordY;
+          partie.lastCoup.y = coordX;
           restartCount();
           //Mise à jour du nombre de tenaille du joueur 2
           joueur2.tenaille += tenailleNumber(coordY, coordX)
@@ -257,8 +257,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         tableau: board,
         nbTenaillesJ1: joueur1.tenaille,
         nbTenaillesJ2: joueur2.tenaille,
-        dernierCoupX: parseInt(partie.lastCoup.x),
-        dernierCoupY: parseInt(partie.lastCoup.y),
+        dernierCoupX: parseInt(partie.lastCoup.y),
+        dernierCoupY: parseInt(partie.lastCoup.x),
         prolongation: partie.prolongation,
         finPartie: partie.endOfGame,
         detailFinPartie: partie.detailFinPartie,
@@ -273,8 +273,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         tableau: board,
         nbTenaillesJ1: joueur1.tenaille,
         nbTenaillesJ2: joueur2.tenaille,
-        dernierCoupX: parseInt(partie.lastCoup.x),
-        dernierCoupY: parseInt(partie.lastCoup.y),
+        dernierCoupX: parseInt(partie.lastCoup.y),
+        dernierCoupY: parseInt(partie.lastCoup.x),
         prolongation: partie.prolongation,
         finPartie: partie.endOfGame,
         detailFinPartie: partie.detailFinPartie,

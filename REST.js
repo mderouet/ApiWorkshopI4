@@ -170,8 +170,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
                 }
               board[coordY][coordX] = 1;
               partie.lap = partie.lap + 1;
-              partie.lastCoup.x = coordY;
-              partie.lastCoup.y = coordX;
+              partie.lastCoup.x = coordX;
+              partie.lastCoup.y = coordY;
               if (partie.lap == 1) {
                 startCount();
               } else {
@@ -201,8 +201,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         if (req.params.idJoueur == joueur2.idJoueur) {
           board[coordY][coordX] = 2;
           partie.lap = partie.lap + 1;
-          partie.lastCoup.x = coordY;
-          partie.lastCoup.y = coordX;
+          partie.lastCoup.x = coordX;
+          partie.lastCoup.y = coordY;
           restartCount();
           //Mise à jour du nombre de tenaille du joueur 2
           joueur2.tenaille += tenailleNumber(coordY, coordX)

@@ -16,6 +16,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
   var timerGame;
   var t;
   var timer_is_on;
+  var timeByTurn;
   init();
 
   function init() {
@@ -45,6 +46,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
     timerManche = 0;
     timerGame = 0;
     timer_is_on = 0;
+    timeByTurn = 120;
 
     //Init board
     board = [
@@ -253,8 +255,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         tableau: board,
         nbTenaillesJ1: joueur1.tenaille,
         nbTenaillesJ2: joueur2.tenaille,
-        dernierCoupX: partie.lastCoup.x,
-        dernierCoupY: partie.lastCoup.y,
+        dernierCoupX: parseInt(partie.lastCoup.x),
+        dernierCoupY: parseInt(partie.lastCoup.y),
         prolongation: partie.prolongation,
         finPartie: partie.endOfGame,
         detailFinPartie: partie.detailFinPartie,
@@ -269,8 +271,8 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
         tableau: board,
         nbTenaillesJ1: joueur1.tenaille,
         nbTenaillesJ2: joueur2.tenaille,
-        dernierCoupX: partie.lastCoup.x,
-        dernierCoupY: partie.lastCoup.y,
+        dernierCoupX: parseInt(partie.lastCoup.x),
+        dernierCoupY: parseInt(partie.lastCoup.y),
         prolongation: partie.prolongation,
         finPartie: partie.endOfGame,
         detailFinPartie: partie.detailFinPartie,
@@ -447,7 +449,7 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
   }
   //Verification du temps du round
   function checkC() {
-    if (timerManche > 120) {
+    if (timerManche > timeByTurn) {
       if(!partie.endOfGame)
       {
       var messageFin = "Temps écoulé, le joueur : " + "[" + joueur1.nomJoueur +"," +joueur1.idJoueur + "] perd" + " et [" +joueur2.nomJoueur + ","+ joueur2.idJoueur+"] gagne"

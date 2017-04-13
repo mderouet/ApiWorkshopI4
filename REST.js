@@ -131,8 +131,10 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
 
 
   router.get("/play/:x/:y/:idJoueur", function(req, res) {
-    var coordX = req.params.y
-    var coordY = req.params.x
+    //Coords
+    var coordX = req.params.x
+    var coordY = req.params.y
+    
     var currentIdJoueur = joueur1.idJoueur
     var currentNomJoueur = joueur1.nomJoueur
     if (joueur2.status == 1) {

@@ -25,13 +25,13 @@ REST_ROUTER.prototype.handleRoutes = function(router, md5) {
       idJoueur: null,
       nomJoueur: null,
       tenaille: 0,
-      status: null
+      status: 0
     }
     joueur2 = {
       idJoueur: null,
       nomJoueur: null,
       tenaille: 0,
-      status: null
+      status: 0
     }
     partie = {
       lap: 0,
